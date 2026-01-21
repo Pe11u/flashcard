@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flashcard Pro</title>
+    <title>Proshcard</title>
     <style>
         :root {
             --primary-color: #0d1117;
@@ -21,17 +21,14 @@
             --border-radius: 8px;
             --transition-speed: 0.3s;
         }
-
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-
         html, body {
             height: 100%;
         }
-
         body {
             background-color: var(--primary-color);
             color: var(--text-color);
@@ -43,7 +40,6 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
-
         .container {
             width: 100%;
             height: 100%;
@@ -57,7 +53,6 @@
             position: relative;
             overflow: hidden;
         }
-
         .screen {
             flex-grow: 1;
             display: flex;
@@ -72,41 +67,34 @@
             transform: translateY(20px);
             transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease, visibility 0s var(--transition-speed);
         }
-
         .screen-content {
              padding: 30px 40px;
              overflow-y: auto;
              flex-grow: 1;
         }
-
         .screen.active {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
             transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
         }
-
         h1, h2, h3 {
             font-weight: 600;
             color: var(--text-color);
             margin-bottom: 20px;
         }
-
         h1 { font-size: 2rem; }
         h2 { font-size: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;}
         h3 { font-size: 1.2rem; margin-bottom: 10px; color: var(--text-secondary-color);}
-
         .input-group {
             margin-bottom: 20px;
         }
-
         .input-group label {
             display: block;
             margin-bottom: 8px;
             color: var(--text-secondary-color);
             font-weight: 500;
         }
-
         .input-group input[type="text"],
         .input-group input[type="number"],
         .input-group textarea {
@@ -120,7 +108,6 @@
             font-size: 1rem;
             transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
         }
-
         .input-group input[type="text"]:focus,
         .input-group input[type="number"]:focus,
         .input-group textarea:focus {
@@ -128,18 +115,15 @@
             border-color: var(--accent-color);
             box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.2);
         }
-
         #cards-input {
             height: 180px;
             resize: vertical;
         }
-
         .options-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
-
         .settings-section {
             margin-top: 15px;
             margin-bottom: 20px;
@@ -147,25 +131,20 @@
             background-color: var(--primary-color);
             border-radius: var(--border-radius);
         }
-
         .time-limit-inputs { display: flex; gap: 10px; }
-
         .checkbox-group { display: flex; align-items: center; gap: 10px; padding: 12px 0;}
         .checkbox-group label { margin-bottom: 0; cursor: pointer; }
-
         .screen-footer {
             padding: 20px 40px;
             background-color: rgba(16, 17, 22, 0.7);
             border-top: 1px solid var(--border-color);
             backdrop-filter: blur(5px);
         }
-
         .footer-actions {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
         .btn, input[type="file"]::-webkit-file-upload-button {
             display: inline-block;
             background-color: var(--accent-color);
@@ -180,16 +159,13 @@
             transition: background-color var(--transition-speed), transform var(--transition-speed);
             font-size: 1rem;
         }
-
         .btn:hover, input[type="file"]::-webkit-file-upload-button:hover { background-color: var(--accent-hover-color); transform: translateY(-2px); }
         .btn-secondary { background-color: var(--border-color); color: var(--text-color) !important; }
         .btn-secondary:hover { background-color: #3e444b; }
         .btn-icon { background: transparent; color: var(--text-secondary-color) !important; border: 1px solid var(--border-color); padding: 8px 16px; }
         .btn-icon:hover { background: var(--border-color); color: var(--text-color) !important; }
-
         input[type="file"] { display: none; }
         .footer-actions div { display: flex; gap: 10px; }
-
         .quiz-screen .screen-content { display: flex; flex-direction: column; }
         .quiz-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
         .progress-bar { width: 100%; height: 8px; background-color: var(--border-color); border-radius: 4px; overflow: hidden; margin-top: 10px;}
@@ -211,7 +187,6 @@
         .result-indicator { position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; border-radius: 10px; border: 4px solid; opacity: 0; transform: scale(0.95); transition: all var(--transition-speed) ease-out; pointer-events: none; }
         .result-indicator.correct { border-color: var(--correct-color); opacity: 1; transform: scale(1); }
         .result-indicator.incorrect { border-color: var(--incorrect-color); opacity: 1; transform: scale(1); }
-
         .summary { text-align: center; padding: 20px; background: var(--primary-color); border-radius: var(--border-radius); margin-bottom: 25px; }
         .summary-stat { font-size: 2.5rem; font-weight: bold; color: var(--accent-color); }
         #time-result-summary h3 { font-size: 1.2rem; color: var(--text-secondary-color); margin-bottom: 5px; }
@@ -222,7 +197,6 @@
         .mistake-item span:first-child { font-weight: bold; }
         .mistake-item span:last-child { background-color: var(--incorrect-color); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.9em; }
         .results-actions { display: flex; gap: 15px; flex-wrap: wrap; }
-
         @media (max-width: 768px) {
             body { padding: 0; }
             .container { max-height: 100%; border-radius: 0;}
@@ -234,12 +208,10 @@
 </head>
 <body>
     <div class="container">
-
         <div id="setup-screen" class="screen active">
             <div class="screen-content">
-                <h1>Flashcard Pro</h1>
+                <h1>Proshcard</h1>
                 <p style="color: var(--text-secondary-color); margin-top: -15px; margin-bottom: 30px;">新しい学習プリセットを作成するか、既存のファイルをインポートします。</p>
-
                 <div class="input-group">
                     <label for="title">プリセットのタイトル</label>
                     <input type="text" id="title" placeholder="例：英単語 Chapter 1">
@@ -258,12 +230,11 @@
                         <input type="text" id="card-separator" value="\n">
                     </div>
                 </div>
-
                 <div class="settings-section">
                     <h3>学習設定</h3>
                     <div class="options-grid">
                          <div class="input-group">
-                            <label for="repetitions-input">各モードでの出題回数</label>
+                            <label for="repetitions-input">各問題の出題回数</label>
                             <input type="number" id="repetitions-input" value="1" min="1" max="10">
                         </div>
                         <div class="checkbox-group">
@@ -299,7 +270,6 @@
                 </div>
             </div>
         </div>
-
         <div id="quiz-screen" class="screen">
             <div class="screen-content">
                 <div class="quiz-header">
@@ -323,7 +293,6 @@
                 <p id="feedback"></p>
             </div>
         </div>
-
         <div id="results-screen" class="screen">
             <div class="screen-content">
                 <h2>学習結果</h2>
@@ -344,7 +313,6 @@
             </div>
         </div>
     </div>
-
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const screens = { setup: document.getElementById('setup-screen'), quiz: document.getElementById('quiz-screen'), results: document.getElementById('results-screen') };
@@ -407,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
         generateQuizQueue();
         navigateTo('quiz');
         renderQuestion();
-
+        
         state.startTime = performance.now();
         state.timerId = setInterval(updateTimer, 50);
     }
@@ -422,7 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
         state.quizQueue = [...mcqQueue, ...typingQueue];
         state.mcqBoundary = mcqQueue.length;
     }
-
+    
     function updateTimer() {
         const elapsedMs = performance.now() - state.startTime;
         if (state.settings.timeLimitEnabled) {
@@ -438,7 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ui.timerDisplay.textContent = formatTime(elapsedMs);
         }
     }
-
+    
     function formatTime(ms) {
         if (ms < 0) ms = 0;
         const totalSeconds = ms / 1000;
@@ -450,10 +418,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderQuestion() {
         clearFeedback();
         if (state.currentQuestionIndex >= state.quizQueue.length) { showResults(); return; }
-
+        
         const { type, cardRef } = state.quizQueue[state.currentQuestionIndex];
         const isMcqPhase = state.currentQuestionIndex < state.mcqBoundary;
-
+        
         ui.quizTitle.textContent = state.title;
         ui.quizPhase.textContent = isMcqPhase ? `フェーズ 1/2 : 四択クイズ` : `フェーズ 2/2 : タイピング`;
         ui.answerContainer.innerHTML = '';
@@ -482,10 +450,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         ui.answerContainer.appendChild(container);
     }
-
+    
     function displayTextInput(correctCard) {
         const input = document.createElement('input');
-        input.type = 'text'; input.id = 'text-input'; input.placeholder = '答えを入力してEnter'; input.autocomplete = 'off';
+        input.type = 'text'; input.id = 'text-input'; input.placeholder = '答えを入力して Enter'; input.autocomplete = 'off';
         input.onkeydown = e => {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -497,7 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ui.answerContainer.appendChild(input);
         input.focus();
     }
-
+    
     function checkAnswer(isCorrect, card) {
         state.totalAnswers++;
         disableInputs();
@@ -518,7 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         setTimeout(() => { state.currentQuestionIndex++; renderQuestion(); }, 1500);
     }
-
+    
     function clearFeedback() { ui.feedback.textContent = ''; document.querySelector('.result-indicator').className = 'result-indicator'; }
     function disableInputs() { ui.answerContainer.querySelectorAll('button, input').forEach(el => el.disabled = true); }
 
@@ -535,7 +503,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 timeHTML = `<h3>時間切れ...</h3><p>${remainingQuestions}問残っていました</p>`;
             } else {
                 const remainingTime = state.settings.timeLimit * 1000 - state.elapsedTime;
-                timeHTML = `<h3>クリア！</h3><p>${formatTime(remainingTime)秒制限時間より早いです</p>`;
+                timeHTML = `<h3>クリア！</h3><p>${formatTime(remainingTime)} 残り</p>`;
             }
         } else {
              timeHTML = `<h3>クリアタイム</h3><p>${formatTime(state.elapsedTime)}</p>`;
@@ -558,7 +526,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
-
+    
     function handleExport(dataSource) {
         const dataToExport = { title: dataSource.title, cards: dataSource.cards.map(({term, definition}) => ({term, definition})) };
         const safeTitle = dataToExport.title.replace(/[^a-z0-9]/gi, '_').toLowerCase() || 'flashcard_preset';
@@ -566,7 +534,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${safeTitle}.json`;
         document.body.appendChild(a); a.click(); URL.revokeObjectURL(a.href); document.body.removeChild(a);
     }
-
+    
     function handleImport(event) {
         const file = event.target.files[0]; if (!file) return;
         const reader = new FileReader();
