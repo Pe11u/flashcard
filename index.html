@@ -142,17 +142,18 @@
             box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color) 25%, transparent);
         }
         #cards-input { height: 180px; resize: vertical; }
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center; }
         .settings-section {
             margin-top: 15px; margin-bottom: 20px; padding: 20px; background-color: var(--primary-color);
             border-radius: var(--border-radius); transition: background-color var(--transition-speed);
         }
+        .settings-section .options-grid .input-group { margin-bottom: 0; }
         .checkbox-group { display: flex; align-items: center; gap: 10px; position: relative; cursor: pointer; user-select: none; }
         .checkbox-group input { position: absolute; opacity: 0; height: 0; width: 0; }
         .checkbox-group label { margin-bottom: 0; display: flex; align-items: center; gap: 10px; }
         .checkbox-group .checkmark {
             height: 20px; width: 20px; background-color: var(--primary-color); border: 2px solid var(--border-color);
-            border-radius: 4px; transition: all var(--transition-fast); display: inline-flex; justify-content: center; align-items: center;
+            border-radius: 4px; transition: all var(--transition-fast); display: inline-flex; justify-content: center; align-items: center; flex-shrink: 0;
         }
         .checkbox-group:hover .checkmark { border-color: var(--accent-color); }
         .checkbox-group input:checked ~ .checkmark { background-color: var(--accent-color); border-color: var(--accent-color); }
@@ -223,6 +224,31 @@
         .mistake-item span:first-child { font-weight: bold; }
         .mistake-item span:last-child { background-color: var(--incorrect-color); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.9em; }
         .results-actions { display: flex; gap: 15px; flex-wrap: wrap; }
+        #language-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; visibility: hidden; transition: opacity 0.2s, visibility 0.2s; z-index: 1000;
+        }
+        #language-modal.show { opacity: 1; visibility: visible; }
+        .language-modal-content {
+            background-color: var(--secondary-color); color: var(--text-color);
+            padding: 20px 30px; border-radius: var(--border-radius); box-shadow: var(--card-shadow);
+            width: 90%; max-width: 400px;
+        }
+        .language-modal-content h2 { margin-bottom: 25px; text-align: center; }
+        .language-options { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .language-options button {
+            background-color: var(--primary-color); color: var(--text-color); border: 1px solid var(--border-color);
+            padding: 12px; border-radius: var(--border-radius); font-size: 1rem; cursor: pointer;
+            transition: background-color var(--transition-fast), border-color var(--transition-fast);
+        }
+        .language-options button:hover { background-color: var(--border-color); border-color: var(--accent-color); }
+        .language-modal-close {
+            display: block; margin: 25px auto 0; background: none; border: none;
+            color: var(--text-secondary-color); cursor: pointer; font-size: 0.9rem;
+        }
+        .language-modal-close:hover { color: var(--text-color); }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
@@ -245,48 +271,49 @@
         <header class="app-header">
             <div id="clock"></div>
             <div class="header-controls">
-                <button id="sound-toggle" class="icon-btn" title="サウンドを切り替え"></button>
-                <button id="theme-toggle" class="icon-btn" title="テーマを切り替え"></button>
+                <button id="language-toggle" class="icon-btn"></button>
+                <button id="sound-toggle" class="icon-btn"></button>
+                <button id="theme-toggle" class="icon-btn"></button>
             </div>
         </header>
 
         <div id="setup-screen" class="screen active">
             <div class="screen-content">
-                <h1>Proshcard</h1>
-                <p style="color: var(--text-secondary-color); margin-top: -15px; margin-bottom: 30px;">新しい学習プリセットを作成するか、既存のファイルをインポートします。</p>
+                <h1 data-lang-key="app_title">Proshcard</h1>
+                <p style="color: var(--text-secondary-color); margin-top: -15px; margin-bottom: 30px;" data-lang-key="app_subtitle">新しい学習プリセットを作成するか、既存のファイルをインポートします。</p>
                 <div class="input-group">
-                    <label for="title">プリセットのタイトル</label>
-                    <input type="text" id="title" placeholder="例：英単語 Chapter 1">
+                    <label for="title" data-lang-key="preset_title">プリセットのタイトル</label>
+                    <input type="text" id="title" data-lang-key-placeholder="preset_title_placeholder">
                 </div>
                 <div class="input-group">
-                    <label for="cards-input">カードデータ<span id="card-count-preview">(0 カード)</span></label>
-                    <textarea id="cards-input" placeholder="ここに単語と意味のリストを入力します。&#10;例:&#10;apple,リンゴ&#10;banana,バナナ&#10;..."></textarea>
+                    <label for="cards-input"><span data-lang-key="card_data">カードデータ</span><span id="card-count-preview" data-lang-key="card_count">(0 カード)</span></label>
+                    <textarea id="cards-input" data-lang-key-placeholder="card_data_placeholder"></textarea>
                 </div>
                 <div class="options-grid">
-                    <div class="input-group"><label for="term-separator">単語と意味の区切り文字</label><input type="text" id="term-separator" value=","></div>
-                    <div class="input-group"><label for="card-separator">カード間の区切り文字 (改行は \n)</label><input type="text" id="card-separator" value="\n"></div>
+                    <div class="input-group"><label for="term-separator" data-lang-key="term_separator">単語と意味の区切り文字</label><input type="text" id="term-separator" value=","></div>
+                    <div class="input-group"><label for="card-separator" data-lang-key="card_separator">カード間の区切り文字 (改行は \n)</label><input type="text" id="card-separator" value="\n"></div>
                 </div>
                 <div class="settings-section">
-                    <h3>学習設定</h3>
+                    <h3 data-lang-key="learning_settings">学習設定</h3>
                     <div class="options-grid">
-                         <div class="input-group"><label for="repetitions-input">各問題の出題回数</label><input type="number" id="repetitions-input" value="1" min="1" max="10"></div>
-                         <label class="checkbox-group"><input type="checkbox" id="reverse-cards-checkbox"><span class="checkmark"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></span>単語と意味を反転する</label>
+                         <div class="input-group"><label for="repetitions-input" data-lang-key="repetitions">各問題の出題回数</label><input type="number" id="repetitions-input" value="1" min="1" max="10"></div>
+                         <label class="checkbox-group"><input type="checkbox" id="reverse-cards-checkbox"><span class="checkmark"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></span><span data-lang-key="reverse_cards">単語と意味を反転する</span></label>
                     </div>
-                    <label class="checkbox-group"><input type="checkbox" id="case-sensitive-checkbox"><span class="checkmark"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></span>タイピングで大文字/小文字を区別</label>
-                     <h3>時間制限</h3>
-                    <label class="checkbox-group"><input type="checkbox" id="time-limit-checkbox"><span class="checkmark"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></span>時間制限を有効にする</label>
+                    <label class="checkbox-group" style="margin-top: 20px;"><input type="checkbox" id="case-sensitive-checkbox"><span class="checkmark"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></span><span data-lang-key="case_sensitive">タイピングで大文字/小文字を区別</span></label>
+                     <h3 style="margin-top: 20px;" data-lang-key="time_limit">時間制限</h3>
+                    <label class="checkbox-group" style="margin-bottom: 10px;"><input type="checkbox" id="time-limit-checkbox"><span class="checkmark"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></span><span data-lang-key="enable_time_limit">時間制限を有効にする</span></label>
                     <div class="options-grid">
-                        <div class="input-group"><label for="time-limit-min">分</label><input type="number" id="time-limit-min" value="1" min="0" disabled></div>
-                        <div class="input-group"><label for="time-limit-sec">秒</label><input type="number" id="time-limit-sec" value="0" min="0" max="59" disabled></div>
+                        <div class="input-group"><label for="time-limit-min" data-lang-key="minutes">分</label><input type="number" id="time-limit-min" value="1" min="0" disabled></div>
+                        <div class="input-group"><label for="time-limit-sec" data-lang-key="seconds">秒</label><input type="number" id="time-limit-sec" value="0" min="0" max="59" disabled></div>
                     </div>
                 </div>
             </div>
             <div class="screen-footer">
                 <div class="footer-actions">
                     <div>
-                        <label for="import-file" class="btn btn-secondary">インポート</label>
-                        <input type="file" id="import-file" accept=".json"><button id="export-setup-btn" class="btn btn-secondary">エクスポート</button>
-                    </div><button id="start-btn" class="btn">学習を始める</button>
+                        <label for="import-file" class="btn btn-secondary" data-lang-key="import">インポート</label>
+                        <input type="file" id="import-file" accept=".json"><button id="export-setup-btn" class="btn btn-secondary" data-lang-key="export">エクスポート</button>
+                    </div><button id="start-btn" class="btn" data-lang-key="start_learning">学習を始める</button>
                 </div>
             </div>
         </div>
@@ -294,7 +321,7 @@
         <div id="quiz-screen" class="screen">
             <div class="screen-content">
                 <div class="quiz-header">
-                    <button id="stop-btn" class="btn btn-icon">中止する</button>
+                    <button id="stop-btn" class="btn btn-icon" data-lang-key="stop_quiz">中止する</button>
                     <div style="text-align: right;"><h2 id="quiz-title" style="margin-bottom: 5px; border: none;"></h2><p id="quiz-phase" style="color: var(--text-secondary-color);"></p></div>
                 </div>
                 <div>
@@ -305,22 +332,38 @@
                 </div>
             </div>
              <div class="quiz-footer">
-                <div id="timer-display">0分 0.000秒</div><p id="feedback"></p>
+                <div id="timer-display"></div><p id="feedback"></p>
             </div>
         </div>
         
         <div id="results-screen" class="screen">
             <div class="screen-content">
-                <h2>学習結果</h2>
+                <h2 data-lang-key="results_title">学習結果</h2>
                 <div id="time-result-summary" class="summary"></div>
-                <div id="accuracy-summary" class="summary"><h3>全体正答率</h3><p class="summary-stat" id="accuracy-stat">0%</p></div>
-                <h3 id="mistake-title">最も間違えた単語</h3><div id="mistake-ranking"><ul id="mistake-ranking-list"></ul></div>
+                <div id="accuracy-summary" class="summary"><h3 data-lang-key="overall_accuracy">全体正答率</h3><p class="summary-stat" id="accuracy-stat">0%</p></div>
+                <h3 id="mistake-title" data-lang-key="most_mistakes">最も間違えた単語</h3><div id="mistake-ranking"><ul id="mistake-ranking-list"></ul></div>
             </div>
             <div class="screen-footer">
                  <div class="results-actions">
-                    <button id="restart-btn" class="btn">もう一度学習する</button><button id="export-results-btn" class="btn">このプリセットをエクスポート</button><button id="new-set-btn" class="btn btn-secondary">スタート画面に戻る</button>
+                    <button id="restart-btn" class="btn" data-lang-key="restart_quiz">もう一度学習する</button><button id="export-results-btn" class="btn" data-lang-key="export_preset">このプリセットをエクスポート</button><button id="new-set-btn" class="btn btn-secondary" data-lang-key="back_to_start">スタート画面に戻る</button>
                 </div>
             </div>
+        </div>
+    </div>
+    <div id="language-modal">
+        <div class="language-modal-content">
+            <h2 data-lang-key="select_language">言語を選択</h2>
+            <div class="language-options">
+                <button data-lang="ja">日本語</button>
+                <button data-lang="en">English</button>
+                <button data-lang="ko">한국어</button>
+                <button data-lang="zh-CN">简体中文</button>
+                <button data-lang="zh-TW">繁體中文</button>
+                <button data-lang="es">Español</button>
+                <button data-lang="de">Deutsch</button>
+                <button data-lang="fr">Français</button>
+            </div>
+            <button class="language-modal-close" data-lang-key="close">閉じる</button>
         </div>
     </div>
     <audio id="audio-click" src="click.mp3" preload="auto"></audio>
@@ -330,6 +373,129 @@
     <audio id="audio-fail" src="fail.mp3" preload="auto"></audio>
 
 <script>
+const translations = {
+    "ja": {
+        "app_title": "Proshcard", "app_subtitle": "新しい学習プリセットを作成するか、既存のファイルをインポートします。", "preset_title": "プリセットのタイトル",
+        "preset_title_placeholder": "例：英単語 Chapter 1", "card_data": "カードデータ", "card_count": "({count} カード)", "card_data_placeholder": "ここに単語と意味のリストを入力します。\n例:\napple,リンゴ\nbanana,バナナ\n...",
+        "term_separator": "単語と意味の区切り文字", "card_separator": "カード間の区切り文字 (改行は \\n)", "learning_settings": "学習設定",
+        "repetitions": "各問題の出題回数", "reverse_cards": "単語と意味を反転する", "case_sensitive": "タイピングで大文字/小文字を区別",
+        "time_limit": "時間制限", "enable_time_limit": "時間制限を有効にする", "minutes": "分", "seconds": "秒", "import": "インポート",
+        "export": "エクスポート", "start_learning": "学習を始める", "stop_quiz": "中止する", "results_title": "学習結果", "overall_accuracy": "全体正答率",
+        "most_mistakes": "最も間違えた単語", "restart_quiz": "もう一度学習する", "export_preset": "このプリセットをエクスポート",
+        "back_to_start": "スタート画面に戻る", "select_language": "言語を選択", "close": "閉じる", "alert_min_cards": "クイズには最低4つのカードが必要です。",
+        "alert_invalid_input": "不正な操作です。", "alert_no_export_data": "エクスポートするカードデータがありません。", "alert_import_failed": "ファイルの読み込みに失敗しました。",
+        "confirm_stop_quiz": "学習を中止しますか？進捗は保存されません。", "quiz_phase_mcq": "フェーズ 1/2 : 四択クイズ", "quiz_phase_text": "フェーズ 2/2 : タイピング",
+        "feedback_correct": "正解！", "feedback_incorrect": "不正解... 正解は: {answer}", "time_up_message": "時間切れ...", "time_up_remaining": "{count}問残っていました",
+        "clear_message": "クリア！", "time_remaining": "{time} 残り", "clear_time_message": "クリアタイム", "mistake_count": "{count} 回", "unnamed_preset": "無題のプリセット",
+        "time_format": "{minutes}分 {seconds}秒", "answer_placeholder": "答えを入力してEnter", "tooltips": { "language": "言語を変更", "sound": "サウンドを切り替え", "theme": "テーマを切り替え" }
+    },
+    "en": {
+        "app_title": "Proshcard", "app_subtitle": "Create a new learning preset or import an existing file.", "preset_title": "Preset Title",
+        "preset_title_placeholder": "e.g., English Vocabulary Chapter 1", "card_data": "Card Data", "card_count": "({count} cards)", "card_data_placeholder": "Enter a list of terms and definitions here.\ne.g.,\napple,リンゴ\nbanana,バナナ\n...",
+        "term_separator": "Term/Definition Separator", "card_separator": "Card Separator (Newline is \\n)", "learning_settings": "Study Settings",
+        "repetitions": "Repetitions per card", "reverse_cards": "Reverse term and definition", "case_sensitive": "Case-sensitive typing",
+        "time_limit": "Time Limit", "enable_time_limit": "Enable time limit", "minutes": "Min", "seconds": "Sec", "import": "Import",
+        "export": "Export", "start_learning": "Start Learning", "stop_quiz": "Stop", "results_title": "Study Results", "overall_accuracy": "Overall Accuracy",
+        "most_mistakes": "Most Mistaken Words", "restart_quiz": "Restart Quiz", "export_preset": "Export This Preset",
+        "back_to_start": "Back to Start Screen", "select_language": "Select Language", "close": "Close", "alert_min_cards": "At least 4 cards are required for a quiz.",
+        "alert_invalid_input": "Invalid operation.", "alert_no_export_data": "There is no card data to export.", "alert_import_failed": "Failed to read the file.",
+        "confirm_stop_quiz": "Stop the quiz? Progress will not be saved.", "quiz_phase_mcq": "Phase 1/2: Multiple Choice", "quiz_phase_text": "Phase 2/2: Typing",
+        "feedback_correct": "Correct!", "feedback_incorrect": "Incorrect... The correct answer is: {answer}", "time_up_message": "Time's up...", "time_up_remaining": "{count} questions remaining",
+        "clear_message": "Cleared!", "time_remaining": "{time} remaining", "clear_time_message": "Clear Time", "mistake_count": "{count} times", "unnamed_preset": "Untitled Preset",
+        "time_format": "{minutes}m {seconds}s", "answer_placeholder": "Type the answer and press Enter", "tooltips": { "language": "Change Language", "sound": "Toggle Sound", "theme": "Toggle Theme" }
+    },
+    "ko": {
+        "app_title": "Proshcard", "app_subtitle": "새 학습 세트를 만들거나 기존 파일을 가져옵니다.", "preset_title": "세트 제목",
+        "preset_title_placeholder": "예: 영단어 Chapter 1", "card_data": "카드 데이터", "card_count": "({count}개 카드)", "card_data_placeholder": "여기에 단어와 뜻 목록을 입력하세요.\n예:\napple,사과\nbanana,바나나\n...",
+        "term_separator": "단어와 뜻 구분자", "card_separator": "카드 간 구분자 (줄바꿈은 \\n)", "learning_settings": "학습 설정",
+        "repetitions": "카드당 반복 횟수", "reverse_cards": "단어와 뜻 뒤집기", "case_sensitive": "타이핑 시 대소문자 구분",
+        "time_limit": "시간 제한", "enable_time_limit": "시간 제한 활성화", "minutes": "분", "seconds": "초", "import": "가져오기",
+        "export": "내보내기", "start_learning": "학습 시작", "stop_quiz": "중지", "results_title": "학습 결과", "overall_accuracy": "전체 정답률",
+        "most_mistakes": "가장 많이 틀린 단어", "restart_quiz": "다시 학습하기", "export_preset": "이 세트 내보내기",
+        "back_to_start": "시작 화면으로 돌아가기", "select_language": "언어 선택", "close": "닫기", "alert_min_cards": "퀴즈를 시작하려면 최소 4개의 카드가 필요합니다.",
+        "alert_invalid_input": "잘못된 조작입니다.", "alert_no_export_data": "내보낼 카드 데이터가 없습니다.", "alert_import_failed": "파일을 읽는 데 실패했습니다.",
+        "confirm_stop_quiz": "학습을 중지하시겠습니까? 진행 상황은 저장되지 않습니다.", "quiz_phase_mcq": "단계 1/2: 객관식", "quiz_phase_text": "단계 2/2: 타이핑",
+        "feedback_correct": "정답!", "feedback_incorrect": "오답... 정답: {answer}", "time_up_message": "시간 초과...", "time_up_remaining": "{count} 문제 남음",
+        "clear_message": "클리어!", "time_remaining": "{time} 남음", "clear_time_message": "클리어 시간", "mistake_count": "{count}회", "unnamed_preset": "제목 없는 세트",
+        "time_format": "{minutes}분 {seconds}초", "answer_placeholder": "답을 입력하고 Enter를 누르세요", "tooltips": { "language": "언어 변경", "sound": "소리 켜기/끄기", "theme": "테마 변경" }
+    },
+    "zh-CN": {
+        "app_title": "Proshcard", "app_subtitle": "创建新的学习预设或导入现有文件。", "preset_title": "预设标题",
+        "preset_title_placeholder": "例如：英语单词 第1章", "card_data": "卡片数据", "card_count": "({count} 张卡片)", "card_data_placeholder": "在此处输入术语和定义的列表。\n例如:\napple,苹果\nbanana,香蕉\n...",
+        "term_separator": "词语和释义分隔符", "card_separator": "卡片间分隔符 (换行为 \\n)", "learning_settings": "学习设置",
+        "repetitions": "每张卡片的重复次数", "reverse_cards": "翻转词语和释义", "case_sensitive": "键入时区分大小写",
+        "time_limit": "时间限制", "enable_time_limit": "启用时间限制", "minutes": "分", "seconds": "秒", "import": "导入",
+        "export": "导出", "start_learning": "开始学习", "stop_quiz": "停止", "results_title": "学习结果", "overall_accuracy": "总正确率",
+        "most_mistakes": "错误最多的单词", "restart_quiz": "再次学习", "export_preset": "导出此预设",
+        "back_to_start": "返回开始屏幕", "select_language": "选择语言", "close": "关闭", "alert_min_cards": "测验至少需要4张卡片。",
+        "alert_invalid_input": "无效操作。", "alert_no_export_data": "没有可导出的卡片数据。", "alert_import_failed": "文件读取失败。",
+        "confirm_stop_quiz": "要停止学习吗？进度将不会被保存。", "quiz_phase_mcq": "阶段 1/2: 选择题", "quiz_phase_text": "阶段 2/2: 打字",
+        "feedback_correct": "正确！", "feedback_incorrect": "错误... 正确答案是: {answer}", "time_up_message": "时间到...", "time_up_remaining": "剩余 {count} 个问题",
+        "clear_message": "已通关！", "time_remaining": "剩余 {time}", "clear_time_message": "通关时间", "mistake_count": "{count} 次", "unnamed_preset": "无标题预设",
+        "time_format": "{minutes}分 {seconds}秒", "answer_placeholder": "输入答案并按 Enter", "tooltips": { "language": "更改语言", "sound": "切换声音", "theme": "切换主题" }
+    },
+    "zh-TW": {
+        "app_title": "Proshcard", "app_subtitle": "建立新的學習預設或匯入現有檔案。", "preset_title": "預設標題",
+        "preset_title_placeholder": "例如：英文單字 第1章", "card_data": "卡片資料", "card_count": "({count} 張卡片)", "card_data_placeholder": "在此處輸入術語和定義的清單。\n例如:\napple,蘋果\nbanana,香蕉\n...",
+        "term_separator": "詞語和釋義分隔符", "card_separator": "卡片間分隔符 (換行爲 \\n)", "learning_settings": "學習設定",
+        "repetitions": "每張卡片的重複次數", "reverse_cards": "翻轉詞語和釋義", "case_sensitive": "輸入時區分大小寫",
+        "time_limit": "時間限制", "enable_time_limit": "啟用時間限制", "minutes": "分", "seconds": "秒", "import": "匯入",
+        "export": "匯出", "start_learning": "開始學習", "stop_quiz": "停止", "results_title": "學習結果", "overall_accuracy": "總正確率",
+        "most_mistakes": "錯誤最多的單字", "restart_quiz": "再次學習", "export_preset": "匯出此預設",
+        "back_to_start": "返回開始畫面", "select_language": "選擇語言", "close": "關閉", "alert_min_cards": "測驗至少需要4張卡片。",
+        "alert_invalid_input": "無效操作。", "alert_no_export_data": "沒有可匯出的卡片資料。", "alert_import_failed": "檔案讀取失敗。",
+        "confirm_stop_quiz": "要停止學習嗎？進度將不會被儲存。", "quiz_phase_mcq": "階段 1/2: 選擇題", "quiz_phase_text": "階段 2/2: 打字",
+        "feedback_correct": "正確！", "feedback_incorrect": "錯誤... 正確答案是: {answer}", "time_up_message": "時間到...", "time_up_remaining": "剩餘 {count} 個問題",
+        "clear_message": "已通關！", "time_remaining": "剩餘 {time}", "clear_time_message": "通關時間", "mistake_count": "{count} 次", "unnamed_preset": "無標題預設",
+        "time_format": "{minutes}分 {seconds}秒", "answer_placeholder": "輸入答案並按 Enter", "tooltips": { "language": "更改語言", "sound": "切換聲音", "theme": "切換主題" }
+    },
+    "es": {
+        "app_title": "Proshcard", "app_subtitle": "Crea un nuevo set de estudio o importa uno existente.", "preset_title": "Título del Set",
+        "preset_title_placeholder": "Ej: Vocabulario de Inglés Cap. 1", "card_data": "Datos de Tarjetas", "card_count": "({count} tarjetas)", "card_data_placeholder": "Introduce una lista de términos y definiciones.\nEj:\napple,manzana\nbanana,plátano\n...",
+        "term_separator": "Separador de Término/Definición", "card_separator": "Separador de Tarjetas (Salto de línea es \\n)", "learning_settings": "Ajustes de Estudio",
+        "repetitions": "Repeticiones por tarjeta", "reverse_cards": "Invertir término y definición", "case_sensitive": "Distinguir mayúsculas/minúsculas",
+        "time_limit": "Límite de Tiempo", "enable_time_limit": "Habilitar límite de tiempo", "minutes": "Min", "seconds": "Seg", "import": "Importar",
+        "export": "Exportar", "start_learning": "Empezar a Estudiar", "stop_quiz": "Parar", "results_title": "Resultados del Estudio", "overall_accuracy": "Precisión General",
+        "most_mistakes": "Palabras con más errores", "restart_quiz": "Reiniciar", "export_preset": "Exportar este Set",
+        "back_to_start": "Volver al Inicio", "select_language": "Seleccionar Idioma", "close": "Cerrar", "alert_min_cards": "Se necesitan al menos 4 tarjetas para el cuestionario.",
+        "alert_invalid_input": "Operación no válida.", "alert_no_export_data": "No hay datos de tarjetas para exportar.", "alert_import_failed": "Error al leer el archivo.",
+        "confirm_stop_quiz": "¿Parar el estudio? El progreso no se guardará.", "quiz_phase_mcq": "Fase 1/2: Opción Múltiple", "quiz_phase_text": "Fase 2/2: Escribir",
+        "feedback_correct": "¡Correcto!", "feedback_incorrect": "Incorrecto... La respuesta correcta es: {answer}", "time_up_message": "¡Se acabó el tiempo!", "time_up_remaining": "{count} preguntas restantes",
+        "clear_message": "¡Completado!", "time_remaining": "{time} restante", "clear_time_message": "Tiempo Total", "mistake_count": "{count} veces", "unnamed_preset": "Set sin título",
+        "time_format": "{minutes}m {seconds}s", "answer_placeholder": "Escribe la respuesta y presiona Enter", "tooltips": { "language": "Cambiar Idioma", "sound": "Activar/Desactivar Sonido", "theme": "Cambiar Tema" }
+    },
+    "de": {
+        "app_title": "Proshcard", "app_subtitle": "Erstelle ein neues Lernset oder importiere eine vorhandene Datei.", "preset_title": "Titel des Sets",
+        "preset_title_placeholder": "z.B. Englisch Vokabeln Kapitel 1", "card_data": "Kartendaten", "card_count": "({count} Karten)", "card_data_placeholder": "Gib hier eine Liste von Begriffen und Definitionen ein.\nz.B.:\napple,Apfel\nbanana,Banane\n...",
+        "term_separator": "Trennzeichen Begriff/Definition", "card_separator": "Trennzeichen zwischen Karten (Zeilenumbruch ist \\n)", "learning_settings": "Lerneinstellungen",
+        "repetitions": "Wiederholungen pro Karte", "reverse_cards": "Begriff und Definition umkehren", "case_sensitive": "Groß-/Kleinschreibung beachten",
+        "time_limit": "Zeitlimit", "enable_time_limit": "Zeitlimit aktivieren", "minutes": "Min", "seconds": "Sek", "import": "Importieren",
+        "export": "Exportieren", "start_learning": "Lernen starten", "stop_quiz": "Stopp", "results_title": "Lernergebnisse", "overall_accuracy": "Gesamtgenauigkeit",
+        "most_mistakes": "Häufigste Fehler", "restart_quiz": "Neustart", "export_preset": "Dieses Set exportieren",
+        "back_to_start": "Zurück zum Startbildschirm", "select_language": "Sprache wählen", "close": "Schließen", "alert_min_cards": "Für ein Quiz sind mindestens 4 Karten erforderlich.",
+        "alert_invalid_input": "Ungültige Operation.", "alert_no_export_data": "Es sind keine Kartendaten zum Exportieren vorhanden.", "alert_import_failed": "Fehler beim Lesen der Datei.",
+        "confirm_stop_quiz": "Das Lernen beenden? Der Fortschritt wird nicht gespeichert.", "quiz_phase_mcq": "Phase 1/2: Multiple-Choice", "quiz_phase_text": "Phase 2/2: Tippen",
+        "feedback_correct": "Richtig!", "feedback_incorrect": "Falsch... Die richtige Antwort ist: {answer}", "time_up_message": "Die Zeit ist um...", "time_up_remaining": "{count} Fragen übrig",
+        "clear_message": "Geschafft!", "time_remaining": "{time} übrig", "clear_time_message": "Benötigte Zeit", "mistake_count": "{count} Mal", "unnamed_preset": "Unbenanntes Set",
+        "time_format": "{minutes}m {seconds}s", "answer_placeholder": "Antwort eingeben und Enter drücken", "tooltips": { "language": "Sprache ändern", "sound": "Ton umschalten", "theme": "Thema wechseln" }
+    },
+    "fr": {
+        "app_title": "Proshcard", "app_subtitle": "Créez un nouveau set d'apprentissage ou importez un fichier existant.", "preset_title": "Titre du set",
+        "preset_title_placeholder": "Ex: Vocabulaire Anglais Chapitre 1", "card_data": "Données des cartes", "card_count": "({count} cartes)", "card_data_placeholder": "Entrez une liste de termes et de définitions ici.\nEx:\napple,pomme\nbanana,banane\n...",
+        "term_separator": "Séparateur terme/définition", "card_separator": "Séparateur de carte (saut de ligne est \\n)", "learning_settings": "Paramètres d'étude",
+        "repetitions": "Répétitions par carte", "reverse_cards": "Inverser terme et définition", "case_sensitive": "Sensible à la casse",
+        "time_limit": "Limite de temps", "enable_time_limit": "Activer la limite de temps", "minutes": "Min", "seconds": "Sec", "import": "Importer",
+        "export": "Exporter", "start_learning": "Commencer", "stop_quiz": "Arrêter", "results_title": "Résultats", "overall_accuracy": "Précision globale",
+        "most_mistakes": "Mots les plus erronés", "restart_quiz": "Recommencer", "export_preset": "Exporter ce set",
+        "back_to_start": "Retour à l'accueil", "select_language": "Sélectionner la langue", "close": "Fermer", "alert_min_cards": "Au moins 4 cartes sont nécessaires pour un quiz.",
+        "alert_invalid_input": "Opération invalide.", "alert_no_export_data": "Il n'y a aucune donnée de carte à exporter.", "alert_import_failed": "Échec de la lecture du fichier.",
+        "confirm_stop_quiz": "Arrêter l'apprentissage ? La progression ne sera pas sauvegardée.", "quiz_phase_mcq": "Phase 1/2 : QCM", "quiz_phase_text": "Phase 2/2 : Saisie",
+        "feedback_correct": "Correct !", "feedback_incorrect": "Incorrect... La bonne réponse est : {answer}", "time_up_message": "Temps écoulé...", "time_up_remaining": "{count} questions restantes",
+        "clear_message": "Terminé !", "time_remaining": "{time} restant", "clear_time_message": "Temps final", "mistake_count": "{count} fois", "unnamed_preset": "Set sans titre",
+        "time_format": "{minutes}m {seconds}s", "answer_placeholder": "Tapez la réponse et appuyez sur Entrée", "tooltips": { "language": "Changer de langue", "sound": "Activer/Désactiver le son", "theme": "Changer de thème" }
+    }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     const screens = { setup: document.getElementById('setup-screen'), quiz: document.getElementById('quiz-screen'), results: document.getElementById('results-screen') };
     const ui = {
@@ -344,13 +510,15 @@ document.addEventListener('DOMContentLoaded', () => {
         timerDisplay: document.getElementById('timer-display'), accuracyStat: document.getElementById('accuracy-stat'), timeResultSummary: document.getElementById('time-result-summary'),
         mistakeRankingList: document.getElementById('mistake-ranking-list'), mistakeTitle: document.getElementById('mistake-title'), restartBtn: document.getElementById('restart-btn'),
         exportResultsBtn: document.getElementById('export-results-btn'), newSetBtn: document.getElementById('new-set-btn'), themeToggle: document.getElementById('theme-toggle'),
-        soundToggle: document.getElementById('sound-toggle'), clock: document.getElementById('clock'),
+        soundToggle: document.getElementById('sound-toggle'), clock: document.getElementById('clock'), languageToggle: document.getElementById('language-toggle'),
+        languageModal: document.getElementById('language-modal'), languageModalClose: document.querySelector('.language-modal-close'), languageOptions: document.querySelector('.language-options'),
     };
     const sounds = {
         click: document.getElementById('audio-click'), correct: document.getElementById('audio-correct'), incorrect: document.getElementById('audio-incorrect'),
         success: document.getElementById('audio-success'), fail: document.getElementById('audio-fail'),
     };
     let state = {};
+    let currentLanguage = 'ja';
 
     function initState() {
         state = {
@@ -392,17 +560,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const timeMin = parseInt(ui.timeLimitMinInput.value, 10);
         const timeSec = parseInt(ui.timeLimitSecInput.value, 10);
         if (isNaN(repetitions) || repetitions < 1 || repetitions > 10 || isNaN(timeMin) || timeMin < 0 || isNaN(timeSec) || timeSec < 0 || timeSec > 59) {
-            alert('不正な操作です。');
+            alert(translations[currentLanguage].alert_invalid_input);
             return;
         }
         let parsedCards;
         try {
             parsedCards = parseInput();
         } catch (e) {
-            alert('不正な操作です。');
+            alert(translations[currentLanguage].alert_invalid_input);
             return;
         }
-        if (parsedCards.length < 4) { alert('クイズには最低4つのカードが必要です。'); return; }
+        if (parsedCards.length < 4) { alert(translations[currentLanguage].alert_min_cards); return; }
         const currentSoundState = state.soundEnabled;
         initState();
         state.soundEnabled = currentSoundState;
@@ -418,10 +586,8 @@ document.addEventListener('DOMContentLoaded', () => {
             originalTerm: card.term,
             incorrectCount: 0, retries: 0
         }));
-        state.title = ui.titleInput.value.trim() || '無題のプリセット';
-
+        state.title = ui.titleInput.value.trim() || translations[currentLanguage].unnamed_preset;
         generateQuizQueue(); navigateTo('quiz'); renderQuestion();
-        
         state.startTime = performance.now();
         state.timerId = setInterval(updateTimer, 50);
     }
@@ -456,7 +622,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalSeconds = ms / 1000;
         const minutes = Math.floor(totalSeconds / 60);
         const seconds = (totalSeconds % 60).toFixed(3);
-        return `${minutes}分 ${seconds.padStart(6, '0')}秒`;
+        return translations[currentLanguage].time_format
+            .replace('{minutes}', minutes)
+            .replace('{seconds}', seconds.padStart(6, '0'));
     }
 
     function renderQuestion() {
@@ -464,7 +632,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (state.currentQuestionIndex >= state.quizQueue.length) { showResults(); return; }
         const { type, cardRef } = state.quizQueue[state.currentQuestionIndex];
         ui.quizTitle.textContent = state.title;
-        ui.quizPhase.textContent = state.currentQuestionIndex < state.mcqBoundary ? `フェーズ 1/2 : 四択クイズ` : `フェーズ 2/2 : タイピング`;
+        ui.quizPhase.textContent = state.currentQuestionIndex < state.mcqBoundary 
+            ? translations[currentLanguage].quiz_phase_mcq 
+            : translations[currentLanguage].quiz_phase_text;
         ui.answerContainer.innerHTML = '';
         ui.progressCounter.textContent = `${state.currentQuestionIndex + 1} / ${state.quizQueue.length}`;
         ui.progressIndicator.style.width = `${((state.currentQuestionIndex + 1) / state.quizQueue.length) * 100}%`;
@@ -493,7 +663,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function displayTextInput(correctCard) {
         const input = document.createElement('input');
-        input.type = 'text'; input.id = 'text-input'; input.placeholder = '答えを入力してEnter'; input.autocomplete = 'off';
+        input.type = 'text'; input.id = 'text-input'; 
+        input.placeholder = translations[currentLanguage].answer_placeholder;
+        input.autocomplete = 'off';
         input.onkeydown = e => {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -513,10 +685,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (isCorrect) {
             state.correctAnswers++; playSound('correct');
-            ui.feedback.textContent = "正解！"; ui.feedback.className = 'correct'; indicator.classList.add('correct');
+            ui.feedback.textContent = translations[currentLanguage].feedback_correct; 
+            ui.feedback.className = 'correct'; indicator.classList.add('correct');
         } else {
             card.incorrectCount++; playSound('incorrect');
-            ui.feedback.textContent = `不正解... 正解は: ${card.term}`; ui.feedback.className = 'incorrect'; indicator.classList.add('incorrect');
+            ui.feedback.textContent = translations[currentLanguage].feedback_incorrect.replace('{answer}', card.term);
+            ui.feedback.className = 'incorrect'; indicator.classList.add('incorrect');
             if (card.retries < 2) {
                 card.retries++;
                 const newAttempt = { ...state.quizQueue[state.currentQuestionIndex] };
@@ -546,17 +720,20 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInterval(state.timerId); state.timerId = null;
         state.elapsedTime = performance.now() - state.startTime;
         ui.timeResultSummary.innerHTML = '';
+        const lang = translations[currentLanguage];
         if (state.settings.timeLimitEnabled) {
             if (isTimeout) {
                 playSound('fail');
-                ui.timeResultSummary.innerHTML = `<h3>時間切れ...</h3><p>${state.quizQueue.length - state.currentQuestionIndex}問残っていました</p>`;
+                const remainingCount = state.quizQueue.length - state.currentQuestionIndex;
+                ui.timeResultSummary.innerHTML = `<h3>${lang.time_up_message}</h3><p>${lang.time_up_remaining.replace('{count}', remainingCount)}</p>`;
             } else {
                 playSound('success');
-                ui.timeResultSummary.innerHTML = `<h3>クリア！</h3><p>${formatTime(state.settings.timeLimit * 1000 - state.elapsedTime)} 残り</p>`;
+                const remainingTime = formatTime(state.settings.timeLimit * 1000 - state.elapsedTime);
+                ui.timeResultSummary.innerHTML = `<h3>${lang.clear_message}</h3><p>${lang.time_remaining.replace('{time}', remainingTime)}</p>`;
             }
         } else {
              playSound('success');
-             ui.timeResultSummary.innerHTML = `<h3>クリアタイム</h3><p>${formatTime(state.elapsedTime)}</p>`;
+             ui.timeResultSummary.innerHTML = `<h3>${lang.clear_time_message}</h3><p>${formatTime(state.elapsedTime)}</p>`;
         }
         const accuracy = state.totalAnswers > 0 ? Math.round((state.correctAnswers / state.totalAnswers) * 100) : 0;
         ui.accuracyStat.textContent = `${accuracy}%`;
@@ -569,7 +746,7 @@ document.addEventListener('DOMContentLoaded', () => {
             mistakes.forEach(card => {
                 const li = document.createElement('li');
                 li.className = 'mistake-item';
-                li.innerHTML = `<span>${card.originalTerm}</span> <span>${card.incorrectCount} 回</span>`;
+                li.innerHTML = `<span>${card.originalTerm}</span> <span>${lang.mistake_count.replace('{count}', card.incorrectCount)}</span>`;
                 ui.mistakeRankingList.appendChild(li);
             });
         }
@@ -594,19 +771,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 ui.titleInput.value = data.title || '';
                 ui.cardsInput.value = data.cards.map(card => `${card.term}${ui.termSeparatorInput.value}${card.definition}`).join(ui.cardSeparatorInput.value === '\\n' ? '\n' : ui.cardSeparatorInput.value);
                 updateCardCountPreview();
-            } catch (error) { alert('ファイルの読み込みに失敗しました。'); }
+            } catch (error) { alert(translations[currentLanguage].alert_import_failed); }
         };
         reader.readAsText(file); event.target.value = null;
     }
 
-    function updateCardCountPreview() { ui.cardCountPreview.textContent = `(${parseInput().length} カード)`; }
+    function updateCardCountPreview() {
+        const count = parseInput().length;
+        ui.cardCountPreview.textContent = translations[currentLanguage].card_count.replace('{count}', count);
+    }
     
     const icons = {};
     const iconSVGs = {
         light: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`,
         dark: `<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`,
         soundOn: `<svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`,
-        soundOff: `<svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`
+        soundOff: `<svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`,
+        language: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`
     };
     for(const key in iconSVGs){
         const temp = document.createElement('div'); temp.innerHTML = iconSVGs[key];
@@ -637,24 +818,56 @@ document.addEventListener('DOMContentLoaded', () => {
         ui.clock.textContent = `${date} ${time}`;
     }
 
+    function applyLanguage(lang) {
+        currentLanguage = lang;
+        localStorage.setItem('language', lang);
+        document.documentElement.lang = lang;
+        const langData = translations[lang];
+        document.querySelectorAll('[data-lang-key]').forEach(el => {
+            const key = el.getAttribute('data-lang-key');
+            if (langData[key]) el.textContent = langData[key];
+        });
+        document.querySelectorAll('[data-lang-key-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-lang-key-placeholder');
+            if (langData[key]) el.placeholder = langData[key];
+        });
+        ui.languageToggle.title = langData.tooltips.language;
+        ui.soundToggle.title = langData.tooltips.sound;
+        ui.themeToggle.title = langData.tooltips.theme;
+        updateCardCountPreview();
+    }
+    
     ['input', 'change'].forEach(e => { ui.cardsInput.addEventListener(e, updateCardCountPreview); ui.cardSeparatorInput.addEventListener(e, updateCardCountPreview); ui.termSeparatorInput.addEventListener(e, updateCardCountPreview); });
     ui.timeLimitCheckbox.addEventListener('change', (e) => [ui.timeLimitMinInput, ui.timeLimitSecInput].forEach(input => input.disabled = !e.target.checked));
     ui.themeToggle.addEventListener('click', () => { playSound('click'); applyTheme(document.documentElement.hasAttribute('data-theme') ? 'dark' : 'light'); });
     ui.soundToggle.addEventListener('click', toggleSound);
     ui.startBtn.addEventListener('click', startQuiz);
-    ui.stopBtn.addEventListener('click', () => { if (confirm('学習を中止しますか？進捗は保存されません。')) { playSound('click'); navigateTo('setup'); } });
+    ui.stopBtn.addEventListener('click', () => { if (confirm(translations[currentLanguage].confirm_stop_quiz)) { playSound('click'); navigateTo('setup'); } });
     ui.importFileBtn.addEventListener('change', handleImport);
     ui.exportSetupBtn.addEventListener('click', () => {
         const cards = parseInput();
-        if (cards.length > 0) handleExport({title: ui.titleInput.value.trim(), cards}); else alert('エクスポートするカードデータがありません。');
+        if (cards.length > 0) handleExport({title: ui.titleInput.value.trim(), cards}); else alert(translations[currentLanguage].alert_no_export_data);
     });
     ui.exportResultsBtn.addEventListener('click', () => handleExport({title: state.title, cards: state.cards}));
     ui.restartBtn.addEventListener('click', () => { playSound('click'); startQuiz()});
     ui.newSetBtn.addEventListener('click', () => { playSound('click'); navigateTo('setup'); });
     
+    ui.languageToggle.addEventListener('click', () => ui.languageModal.classList.add('show'));
+    ui.languageModalClose.addEventListener('click', () => ui.languageModal.classList.remove('show'));
+    ui.languageModal.addEventListener('click', (e) => { if(e.target === ui.languageModal) ui.languageModal.classList.remove('show') });
+    ui.languageOptions.addEventListener('click', (e) => {
+        if(e.target.tagName === 'BUTTON') {
+            applyLanguage(e.target.dataset.lang);
+            ui.languageModal.classList.remove('show');
+        }
+    });
+
     initState();
     applyTheme(localStorage.getItem('theme') || 'dark');
+    const savedLang = localStorage.getItem('language') || 'ja';
+    applyLanguage(savedLang);
     ui.soundToggle.innerHTML = state.soundEnabled ? icons.soundOn : icons.soundOff;
+    ui.languageToggle.innerHTML = icons.language;
     updateClock(); state.clockId = setInterval(updateClock, 1000);
 });
 </script>
