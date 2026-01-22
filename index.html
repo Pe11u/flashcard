@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Proshcard</title>
-    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48c3R5bGU+cGF0aHtmaWxsOiMwOTY5ZGF9QG1lZGlhKHByZWZlcnMtY29sb3Itc2NoZW1lOmRhcmspe3BhdGh7ZmlsbDojNThhNmZmfX08L3N0eWxlPjxwYXRoIGQלא=">
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48c3R5bGU+cGF0aHtmaWxsOiMwOTY5ZGF9QG1lZGlhKHByZWZlcnMtY29sb3Itc2NoZW1lOmRhcmspe3BhdGh7ZmlsbDojNThhNmZmfX08L3N0eWxlPjxwYXRoIGQ9Ik0yMCAxMEg4MEM4NS41MjI4IDEwIDkwIDE0LjQ3NzIgOTAgMjBWODBDOTAgODUuNTIyOCA4NS41MjI4IDkwIDgwIDkwSDIwQzE0LjQ3NzIgOTAgMTAgODUuNTIyOCAxMCA4MFYyMEMxMCAxNC40NzcyIDE0LjQ3NzIgMTAgMjAgMTBaTTUwIDM1TDI1IDUwTDUwIDY1TDc1IDUwTDUwIDM1WiIvPjwvc3ZnPg==">
     <style>
         :root {
             --shadow-light: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
@@ -545,31 +545,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function parseInput() {
         const input = ui.cardsInput.value.trim();
-        const cardSeparatorValue = ui.cardSeparatorInput.value;
-        const termSeparatorValue = ui.termSeparatorInput.value;
-
-        if (!input || !cardSeparatorValue || !termSeparatorValue) {
-            return [];
-        }
-        
-        const cardSeparator = cardSeparatorValue === '\\n' ? '\n' : cardSeparatorValue;
-
-        const lines = input.split(cardSeparator);
-        
-        const cards = lines.map(line => {
-            const separatorIndex = line.indexOf(termSeparatorValue);
-            
-            if (separatorIndex === -1) {
-                return null;
-            }
-            
-            const term = line.substring(0, separatorIndex).trim();
-            const definition = line.substring(separatorIndex + termSeparatorValue.length).trim();
-
-            return { term, definition };
-        });
-        
-        return cards.filter(card => card && (card.term !== '' || card.definition !== ''));
+        const cardSeparator = ui.cardSeparatorInput.value === '\\n' ? '\n' : ui.cardSeparatorInput.value;
+        const termSeparator = ui.termSeparatorInput.value;
+        if (!input || !cardSeparator || !termSeparator) return [];
+        return input.split(cardSeparator).map(line => {
+            const parts = line.split(termSeparator);
+            return (parts.length >= 2) ? { term: parts[0].trim(), definition: parts[1].trim() } : null;
+        }).filter(Boolean);
     }
 
     function startQuiz() {
