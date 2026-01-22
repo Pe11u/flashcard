@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Proshcard</title>
-    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48c3R5bGU+cGF0aHtmaWxsOiMwOTY5ZGF9QG1lZGlhKHByZWZlcnMtY29sb3Itc2NoZW1lOmRhcmspe3BhdGh7ZmlsbDojNThhNmZmfX08L3N0eWxlPjxwYXRoIGQ9Ik0yMCAxMEg4MEM4NS41MjI4IDEwIDkwIDE0LjQ3NzIgOTAgMjBWODBDOTAgODUuNTIyOCA4NS41MjI4IDkwIDgwIDkwSDIwQzE0LjQ3NzIgOTAgMTAgODUuNTIyOCAxMCA4MFYyMEMxMCAxNC40NzcyIDE0LjQ3NzIgMTAgMjAgMTBaTTUwIDM1TDIšIDUwTDUwIDY1TDc1IDUwTDUwIDM1WiIvPjwvc3ZnPg==">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><style>path{fill:%230969da}@media(prefers-color-scheme:dark){path{fill:%2358a6ff}}</style><path d='M20 10H80C85.5228 10 90 14.4772 90 20V80C90 85.5228 85.5228 90 80 90H20C14.4772 90 10 85.5228 10 80V20C10 14.4772 14.4772 10 20 10ZM50 35L25 50L50 65L75 50L50 35Z'/></svg>">
     <style>
         :root {
             --shadow-light: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
@@ -141,7 +141,7 @@
             outline: none; border-color: var(--accent-color);
             box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color) 25%, transparent);
         }
-        #cards-input { height: 180px; resize: vertical; }
+        #cards-input { height: 220px; resize: vertical; }
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center; }
         .settings-section {
             margin-top: 15px; margin-bottom: 20px; padding: 20px; background-color: var(--primary-color);
@@ -252,15 +252,12 @@
             color: var(--text-secondary-color); cursor: pointer; font-size: 0.9rem;
         }
         .language-modal-close:hover { color: var(--text-color); }
-        .editor-toggle-btn {
-            position: absolute; bottom: 10px; right: 10px;
-            padding: 6px 12px; font-size: 0.9rem;
-        }
-        #formatted-editor { max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--border-radius); padding: 10px; }
+        #formatted-editor { max-height: 220px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--border-radius); padding: 10px; }
         .formatted-card { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
         .formatted-card input { flex-grow: 1; }
         .delete-card-btn { background: none; border: none; color: var(--incorrect-color); cursor: pointer; font-size: 1.5rem; line-height: 1; padding: 0 5px; }
-        .add-card-btn-container { text-align: center; margin-top: 10px; }
+        .editor-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
+        .editor-actions .btn-secondary { padding: 8px 16px; font-size: 0.9rem; }
         .hidden { display: none !important; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
         @keyframes shake {
@@ -302,14 +299,16 @@
                     <label for="cards-input"><span data-lang-key="card_data">カードデータ</span><span id="card-count-preview" data-lang-key="card_count">(0 カード)</span></label>
                     <div id="raw-editor-container" class="hidden">
                         <textarea id="cards-input" data-lang-key-placeholder="card_data_placeholder"></textarea>
-                        <button id="format-btn" class="btn btn-secondary editor-toggle-btn" data-lang-key="switch_to_formatted">フォーマット化に戻す</button>
+                        <div class="editor-actions" style="justify-content: flex-end;">
+                           <button id="format-btn" class="btn btn-secondary" data-lang-key="switch_to_formatted">フォーマット化に戻す</button>
+                        </div>
                     </div>
                     <div id="formatted-editor-container">
                         <div id="formatted-editor"></div>
-                        <div class="add-card-btn-container">
+                        <div class="editor-actions">
                              <button id="add-card-btn" class="btn btn-secondary" data-lang-key="add_card">カードを追加</button>
+                             <button id="back-to-raw-btn" class="btn btn-secondary" data-lang-key="switch_to_raw">Rawに切り替え</button>
                         </div>
-                        <button id="back-to-raw-btn" class="btn btn-secondary editor-toggle-btn" data-lang-key="switch_to_raw">Rawに切り替え</button>
                     </div>
                 </div>
                 <div id="separators-container" class="options-grid hidden">
@@ -459,7 +458,7 @@ const translations = {
         "weekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], "switch_to_raw": "Switch to Raw", "switch_to_formatted": "Back to Formatted", "add_card": "Add Card", "term_placeholder": "Term", "definition_placeholder": "Definition"
     },
     "ko": {
-        "app_title": "Proshcard", "app_subtitle": "새 학습 세트를 만들거나 기존 파일을 가져옵니다.", "preset_title": "세트 제목", "preset_title_placeholder": "예: 영단어 Chapter 1", "card_data": "카드 데이터", "card_count": "({count}개 카드)",
+        "app_title": "Proshcard", "app_subtitle": "새 학습 세트를 만들거나 기존 파일을 가져옵니다。", "preset_title": "세트 제목", "preset_title_placeholder": "예: 영단어 Chapter 1", "card_data": "카드 데이터", "card_count": "({count}개 카드)",
         "card_data_placeholder": "여기에 단어와 뜻 목록을 입력하세요.\n예:\napple,사과\nbanana,바나나\n...", "term_separator": "단어와 뜻 구분자", "card_separator": "카드 간 구분자 (줄바꿈은 \\n)",
         "learning_settings": "학습 설정", "repetitions": "카드당 반복 횟수", "reverse_cards": "단어와 뜻 뒤집기", "case_sensitive": "타이핑 시 대소문자 구분", "time_limit": "시간 제한",
         "enable_time_limit": "전체 시간 제한 활성화", "minutes": "분", "seconds": "초", "import": "가져오기", "export": "내보내기", "start_learning": "학습 시작", "stop_quiz": "중지",
@@ -839,10 +838,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateResultsTexts(isTimeout = null) {
         if(!screens.results.classList.contains('active')) return;
         const lang = translations[currentLanguage];
-        let timeResultHeader = '';
-        let timeResultBody = '';
-
+        
         if (isTimeout !== null) {
+            let timeResultHeader = '';
+            let timeResultBody = '';
             if (state.settings.timeLimitEnabled) {
                 if (isTimeout) {
                     playSound('fail');
@@ -857,7 +856,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } else {
                  playSound('success');
-                 timeResultHeader = `<h3 data-lang-key="clear_time_message">${lang.clear_time_message}</h3>`;
+                 timeResultHeader = `<h3>${lang.clear_time_message}</h3>`;
                  timeResultBody = `<p>${formatTime(state.elapsedTime)}</p>`;
             }
             ui.timeResultSummary.innerHTML = timeResultHeader + timeResultBody;
@@ -886,8 +885,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if(isFormattedView) syncFormattedToRaw();
 
         const cardsToExport = parseInput(true).filter(c => c.term && c.definition);
-        const dataToExport = { title: dataSource.title, cards: cardsToExport };
-        const safeTitle = dataSource.title || 'proshcard_preset';
+        const dataToExport = { title: ui.titleInput.value.trim(), cards: cardsToExport };
+        const safeTitle = dataToExport.title || 'proshcard_preset';
         const blob = new Blob([new TextEncoder().encode(JSON.stringify(dataToExport, null, 2))], {type: 'application/json;charset=utf-8'});
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${safeTitle}.json`;
         document.body.appendChild(a); a.click(); URL.revokeObjectURL(a.href); document.body.removeChild(a);
@@ -1024,10 +1023,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (state.editorView === 'raw') {
                 switchToRawView(false);
             } else {
-                syncRawToFormatted();
+                switchToFormattedView(true);
             }
         } else {
-            syncRawToFormatted();
+            switchToFormattedView(true);
         }
     }
     
@@ -1116,8 +1115,10 @@ document.addEventListener('DOMContentLoaded', () => {
     ui.stopBtn.addEventListener('click', () => { if (confirm(translations[currentLanguage].confirm_stop_quiz)) { playSound('click'); navigateTo('setup'); } });
     ui.importFileBtn.addEventListener('change', handleImport);
     ui.exportSetupBtn.addEventListener('click', () => {
-        const cards = parseInput(ui.rawEditorContainer.classList.contains('hidden')).filter(c => c.term && c.definition);
-        if (cards.length > 0) handleExport({title: ui.titleInput.value.trim(), cards}); else alert(translations[currentLanguage].alert_no_export_data);
+        const isFormattedView = !ui.formattedEditorContainer.classList.contains('hidden');
+        if(isFormattedView) syncFormattedToRaw();
+        const cardsToExport = parseInput(true).filter(c => c.term && c.definition);
+        if (cardsToExport.length > 0) handleExport({title: ui.titleInput.value.trim(), cards: cardsToExport}); else alert(translations[currentLanguage].alert_no_export_data);
     });
     ui.exportResultsBtn.addEventListener('click', () => handleExport({title: state.title, cards: state.cards}));
     ui.restartBtn.addEventListener('click', () => { playSound('click'); initState(); startQuiz()});
