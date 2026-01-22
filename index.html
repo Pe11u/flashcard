@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Proshcard</title>
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48c3R5bGU+cGF0aHtmaWxsOiMwOTY5ZGF9QG1lZGlhKHByZWZlcnMtY29sb3Itc2NoZW1lOmRhcmspe3BhdGh7ZmlsbDojNThhNmZmfX08L3N0eWxlPjxwYXRoIGQ9Ik0yMCAxMEg4MEM4NS41MjI4IDEwIDkwIDE0LjQ3NzIgOTAgMjBWODBDOTAgODUuNTIyOCA4NS41MjI4IDkwIDgwIDkwSDIwQzE0LjQ3NzIgOTAgMTAgODUuNTIyOCAxMCA4MFYyMEMxMCAxNC40NzcyIDE0LjQ3NzIgMTAgMjAgMTBaTTUwIDM1TDI1IDUwTDUwIDY1TDc1IDUwTDUwIDM1WiIvPjwvc3ZnPg==">
     <style>
         :root {
             --shadow-light: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
@@ -24,6 +25,7 @@
             --text-secondary-color: #8b949e;
             --accent-color: #58a6ff;
             --accent-hover-color: #79c0ff;
+            --header-icon-color: #e6edf3;
             --card-shadow: var(--shadow-dark);
             --scrollbar-thumb-color: #30363d;
             --scrollbar-thumb-hover-color: #484f58;
@@ -36,6 +38,7 @@
             --text-secondary-color: #57606a;
             --accent-color: #0969da;
             --accent-hover-color: #2c85e5;
+            --header-icon-color: #24292f;
             --card-shadow: var(--shadow-light);
             --scrollbar-thumb-color: #d0d7de;
             --scrollbar-thumb-hover-color: #afb8c1;
@@ -51,6 +54,7 @@
             background-color: var(--scrollbar-thumb-color);
             border-radius: 6px;
             border: 3px solid var(--secondary-color);
+            transition: background-color var(--transition-speed);
         }
         ::-webkit-scrollbar-thumb:hover { background-color: var(--scrollbar-thumb-hover-color); }
         body {
@@ -99,11 +103,11 @@
         .header-controls { display: flex; align-items: center; gap: 5px; }
         .icon-btn {
             background: none; border: none; width: 36px; height: 36px; border-radius: 50%;
-            cursor: pointer; color: var(--text-secondary-color);
+            cursor: pointer; color: var(--header-icon-color);
             display: flex; justify-content: center; align-items: center;
-            transition: all var(--transition-fast);
+            transition: background-color var(--transition-fast), color var(--transition-speed);
         }
-        .icon-btn:hover { background-color: var(--border-color); color: var(--text-color); }
+        .icon-btn:hover { background-color: var(--border-color); }
         .icon-btn svg { width: 20px; height: 20px; }
         .screen {
             flex-grow: 1; display: flex; flex-direction: column;
@@ -386,20 +390,21 @@ document.addEventListener('DOMContentLoaded', () => {
         playSound('click');
         const parsedCards = parseInput();
         if (parsedCards.length < 4) { alert('クイズには最低4つのカードが必要です。'); return; }
-
+        const currentSoundState = state.soundEnabled;
         initState();
+        state.soundEnabled = currentSoundState;
         state.cards = parsedCards;
         state.settings = {
             repetitions: parseInt(ui.repetitionsInput.value, 10) || 1, caseSensitive: ui.caseSensitiveCheckbox.checked,
             timeLimitEnabled: ui.timeLimitCheckbox.checked, reverseCards: ui.reverseCardsCheckbox.checked,
             timeLimit: (parseInt(ui.timeLimitMinInput.value, 10) || 0) * 60 + (parseInt(ui.timeLimitSecInput.value, 10) || 0)
         };
-
-        state.sessionCardStats = state.cards.map(card => {
-            const term = state.settings.reverseCards ? card.definition : card.term;
-            const definition = state.settings.reverseCards ? card.term : card.definition;
-            return { term, definition, originalTerm: card.term, incorrectCount: 0, retries: 0 };
-        });
+        state.sessionCardStats = state.cards.map(card => ({
+            term: state.settings.reverseCards ? card.definition : card.term,
+            definition: state.settings.reverseCards ? card.term : card.definition,
+            originalTerm: card.term,
+            incorrectCount: 0, retries: 0
+        }));
         state.title = ui.titleInput.value.trim() || '無題のプリセット';
 
         generateQuizQueue(); navigateTo('quiz'); renderQuestion();
@@ -559,9 +564,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function handleExport(dataSource) {
         playSound('click');
-        const dataToExport = { title: dataSource.title, cards: dataSource.cards.map(({term, definition}) => ({term, definition})) };
+        const dataToExport = { title: dataSource.title, cards: dataSource.cards.map(card => ({term: card.term, definition: card.definition})) };
         const safeTitle = dataSource.title || 'proshcard_preset';
-        const blob = new Blob([JSON.stringify(dataToExport, null, 2)], {type: 'application/json'});
+        const blob = new Blob([new TextEncoder().encode(JSON.stringify(dataToExport, null, 2))], {type: 'application/json;charset=utf-8'});
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${safeTitle}.json`;
         document.body.appendChild(a); a.click(); URL.revokeObjectURL(a.href); document.body.removeChild(a);
     }
@@ -583,18 +588,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateCardCountPreview() { ui.cardCountPreview.textContent = `(${parseInput().length} カード)`; }
     
-    const icons = {
+    const icons = {};
+    const iconSVGs = {
         light: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`,
         dark: `<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`,
         soundOn: `<svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`,
         soundOff: `<svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`
     };
-    Object.values(icons).forEach(svg => {
-        const temp = document.createElement('div'); temp.innerHTML = svg;
+    for(const key in iconSVGs){
+        const temp = document.createElement('div'); temp.innerHTML = iconSVGs[key];
         const svgEl = temp.querySelector('svg');
         svgEl.setAttribute('fill', 'none'); svgEl.setAttribute('stroke', 'currentColor');
         svgEl.setAttribute('stroke-width', '2'); svgEl.setAttribute('stroke-linecap', 'round'); svgEl.setAttribute('stroke-linejoin', 'round');
-    });
+        icons[key] = svgEl.outerHTML;
+    }
 
     function applyTheme(theme) {
         if(theme === 'light') { document.documentElement.setAttribute('data-theme', 'light'); ui.themeToggle.innerHTML = icons.dark; }
@@ -612,16 +619,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateClock() {
         const now = new Date();
         const days = ['日', '月', '火', '水', '木', '金', '土'];
-        const date = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 (${days[now.getDay()]})`;
+        const date = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')} (${days[now.getDay()]})`;
         const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
         ui.clock.textContent = `${date} ${time}`;
     }
 
-    ['input', 'change'].forEach(e => {
-        ui.cardsInput.addEventListener(e, updateCardCountPreview);
-        ui.cardSeparatorInput.addEventListener(e, updateCardCountPreview);
-        ui.termSeparatorInput.addEventListener(e, updateCardCountPreview);
-    });
+    ['input', 'change'].forEach(e => { ui.cardsInput.addEventListener(e, updateCardCountPreview); ui.cardSeparatorInput.addEventListener(e, updateCardCountPreview); ui.termSeparatorInput.addEventListener(e, updateCardCountPreview); });
     ui.timeLimitCheckbox.addEventListener('change', (e) => [ui.timeLimitMinInput, ui.timeLimitSecInput].forEach(input => input.disabled = !e.target.checked));
     ui.themeToggle.addEventListener('click', () => { playSound('click'); applyTheme(document.documentElement.hasAttribute('data-theme') ? 'dark' : 'light'); });
     ui.soundToggle.addEventListener('click', toggleSound);
@@ -632,8 +635,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const cards = parseInput();
         if (cards.length > 0) handleExport({title: ui.titleInput.value.trim(), cards}); else alert('エクスポートするカードデータがありません。');
     });
-    ui.exportResultsBtn.addEventListener('click', () => handleExport({title: state.title, cards: state.cards.map(c => ({term: c.originalTerm, definition: c.originalDefinition}))}));
-    ui.restartBtn.addEventListener('click', startQuiz);
+    ui.exportResultsBtn.addEventListener('click', () => handleExport({title: state.title, cards: state.cards}));
+    ui.restartBtn.addEventListener('click', () => { playSound('click'); startQuiz()});
     ui.newSetBtn.addEventListener('click', () => { playSound('click'); navigateTo('setup'); });
     
     initState();
