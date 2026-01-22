@@ -388,16 +388,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startQuiz() {
         playSound('click');
-        const parsedCards = parseInput();
+        const repetitions = parseInt(ui.repetitionsInput.value, 10);
+        const timeMin = parseInt(ui.timeLimitMinInput.value, 10);
+        const timeSec = parseInt(ui.timeLimitSecInput.value, 10);
+        if (isNaN(repetitions) || repetitions < 1 || repetitions > 10 || isNaN(timeMin) || timeMin < 0 || isNaN(timeSec) || timeSec < 0 || timeSec > 59) {
+            alert('不正な操作です。');
+            return;
+        }
+        let parsedCards;
+        try {
+            parsedCards = parseInput();
+        } catch (e) {
+            alert('不正な操作です。');
+            return;
+        }
         if (parsedCards.length < 4) { alert('クイズには最低4つのカードが必要です。'); return; }
         const currentSoundState = state.soundEnabled;
         initState();
         state.soundEnabled = currentSoundState;
         state.cards = parsedCards;
         state.settings = {
-            repetitions: parseInt(ui.repetitionsInput.value, 10) || 1, caseSensitive: ui.caseSensitiveCheckbox.checked,
+            repetitions: repetitions, caseSensitive: ui.caseSensitiveCheckbox.checked,
             timeLimitEnabled: ui.timeLimitCheckbox.checked, reverseCards: ui.reverseCardsCheckbox.checked,
-            timeLimit: (parseInt(ui.timeLimitMinInput.value, 10) || 0) * 60 + (parseInt(ui.timeLimitSecInput.value, 10) || 0)
+            timeLimit: timeMin * 60 + timeSec
         };
         state.sessionCardStats = state.cards.map(card => ({
             term: state.settings.reverseCards ? card.definition : card.term,
