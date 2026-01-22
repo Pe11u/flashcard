@@ -157,8 +157,8 @@
         }
         .checkbox-group:hover .checkmark { border-color: var(--accent-color); }
         .checkbox-group input:checked + .checkmark { background-color: var(--accent-color); border-color: var(--accent-color); }
-        .checkbox-group .checkmark svg { width: 14px; height: 14px; stroke: white; display: none; }
-        .checkbox-group input:checked + .checkmark svg { display: block; }
+        .checkbox-group .checkmark svg { width: 16px; height: 16px; display: none; }
+        .checkbox-group input:checked + .checkmark svg { display: block; fill: white; }
         .screen-footer {
             padding: 20px 40px; background-color: color-mix(in srgb, var(--secondary-color) 70%, transparent);
             border-top: 1px solid var(--border-color); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
@@ -200,13 +200,13 @@
         .mcq-btn.answered.incorrect { background-color: var(--incorrect-color); color: white; opacity: 1; animation: shake 0.5s; }
         .mcq-btn.answered.reveal { border: 2px solid var(--correct-color); background-color: transparent; opacity: 1; }
         #text-input { width: 100%; padding: 16px; font-size: 1.2rem; text-align: center; background-color: var(--primary-color); border: 1px solid var(--border-color); border-radius: var(--border-radius); color: var(--text-color); }
-        .quiz-footer { min-height: 50px; display: flex; justify-content: space-between; align-items: center; padding: 0 40px 20px; gap: 15px;}
-        #skip-btn { background-color: transparent; color: var(--text-secondary-color); border: 1px solid var(--border-color); padding: 8px 16px; }
+        .quiz-footer { min-height: 50px; display: flex; align-items: center; padding: 0 40px 20px; gap: 15px; }
+        #skip-btn { background-color: transparent; color: var(--text-secondary-color); border: 1px solid var(--border-color); padding: 8px 16px; flex-shrink: 0; }
         #skip-btn:hover { background-color: var(--border-color); color: var(--text-color); }
         .timers-container { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
         #timer-display, #question-timer-display { font-size: 1.2rem; font-weight: bold; font-variant-numeric: tabular-nums; transition: color 0.3s; }
         #timer-display.warning, #question-timer-display.warning { color: var(--warning-color); animation: pulse 1s infinite; }
-        #feedback { font-size: 1rem; font-weight: bold; text-align: right; flex-grow: 1;}
+        #feedback { font-size: 1rem; font-weight: bold; text-align: center; flex-grow: 1;}
         #feedback.correct { color: var(--correct-color); } #feedback.incorrect { color: var(--incorrect-color); }
         .result-indicator {
             position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; border-radius: 10px;
@@ -304,12 +304,12 @@
                     <div class="checkbox-wrapper">
                         <label class="checkbox-group" for="reverse-cards-checkbox">
                             <input type="checkbox" id="reverse-cards-checkbox">
-                            <span class="checkmark"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                            <span class="checkmark"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path></svg></span>
                             <span data-lang-key="reverse_cards">単語と意味を反転する</span>
                         </label>
                         <label class="checkbox-group" for="case-sensitive-checkbox">
                              <input type="checkbox" id="case-sensitive-checkbox">
-                             <span class="checkmark"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                             <span class="checkmark"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path></svg></span>
                              <span data-lang-key="case_sensitive">タイピングで大文字/小文字を区別</span>
                         </label>
                     </div>
@@ -317,7 +317,7 @@
                      <div class="checkbox-wrapper">
                         <label class="checkbox-group" for="time-limit-checkbox">
                             <input type="checkbox" id="time-limit-checkbox">
-                            <span class="checkmark"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                            <span class="checkmark"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path></svg></span>
                             <span data-lang-key="enable_time_limit">全体時間制限を有効にする</span>
                         </label>
                      </div>
@@ -328,7 +328,7 @@
                     <div class="checkbox-wrapper" style="margin-top: 10px;">
                         <label class="checkbox-group" for="per-question-time-limit-checkbox">
                             <input type="checkbox" id="per-question-time-limit-checkbox">
-                            <span class="checkmark"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                            <span class="checkmark"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path></svg></span>
                             <span data-lang-key="enable_per_question_time_limit">各問の時間制限を有効にする</span>
                         </label>
                     </div>
@@ -365,8 +365,8 @@
                     <div id="timer-display"></div>
                     <div id="question-timer-display"></div>
                 </div>
-                <button id="skip-btn" class="btn" data-lang-key="skip">スキップ</button>
                 <p id="feedback"></p>
+                <button id="skip-btn" class="btn" data-lang-key="skip">スキップ</button>
             </div>
         </div>
         
