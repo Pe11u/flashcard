@@ -300,19 +300,19 @@
                 </div>
                 <div class="input-group">
                     <label for="cards-input"><span data-lang-key="card_data">カードデータ</span><span id="card-count-preview" data-lang-key="card_count">(0 カード)</span></label>
-                    <div id="raw-editor-container">
+                    <div id="raw-editor-container" class="hidden">
                         <textarea id="cards-input" data-lang-key-placeholder="card_data_placeholder"></textarea>
-                        <button id="format-btn" class="btn btn-secondary editor-toggle-btn" data-lang-key="format_cards">フォーマット化する</button>
+                        <button id="format-btn" class="btn btn-secondary editor-toggle-btn" data-lang-key="switch_to_formatted">フォーマット化に戻す</button>
                     </div>
-                    <div id="formatted-editor-container" class="hidden">
+                    <div id="formatted-editor-container">
                         <div id="formatted-editor"></div>
                         <div class="add-card-btn-container">
                              <button id="add-card-btn" class="btn btn-secondary" data-lang-key="add_card">カードを追加</button>
                         </div>
-                        <button id="back-to-raw-btn" class="btn btn-secondary editor-toggle-btn" data-lang-key="back_to_raw">Rawに戻す</button>
+                        <button id="back-to-raw-btn" class="btn btn-secondary editor-toggle-btn" data-lang-key="switch_to_raw">Rawに切り替え</button>
                     </div>
                 </div>
-                <div id="separators-container" class="options-grid">
+                <div id="separators-container" class="options-grid hidden">
                     <div class="input-group"><label for="term-separator" data-lang-key="term_separator">単語と意味の区切り文字</label><input type="text" id="term-separator" value=","></div>
                     <div class="input-group"><label for="card-separator" data-lang-key="card_separator">カード間の区切り文字 (改行は \n)</label><input type="text" id="card-separator" value="\n"></div>
                 </div>
@@ -441,7 +441,7 @@ const translations = {
         "time_up_remaining": "{count}問残っていました", "clear_message": "クリア！", "time_remaining": "{time} 残り", "clear_time_message": "クリアタイム", "mistake_count": "{count} 回",
         "unnamed_preset": "無題のプリセット", "time_format": "{minutes}分 {seconds}秒", "answer_placeholder": "答えを入力してEnter", "tooltips": { "language": "言語を変更", "sound": "サウンドを切り替え", "theme": "テーマを切り替え" },
         "skip": "スキップ", "enable_per_question_time_limit": "各問の時間制限を有効にする", "seconds_per_question": "1問あたりの秒数", "overall_time": "全体時間", "question_time": "残り時間",
-        "weekdays": ["日", "月", "火", "水", "木", "金", "土"], "format_cards": "フォーマット化する", "back_to_raw": "Rawに戻す", "add_card": "カードを追加", "term_placeholder": "単語", "definition_placeholder": "意味"
+        "weekdays": ["日", "月", "火", "水", "木", "金", "土"], "switch_to_raw": "Rawに切り替え", "switch_to_formatted": "フォーマット化に戻す", "add_card": "カードを追加", "term_placeholder": "単語", "definition_placeholder": "意味"
     },
     "en": {
         "app_title": "Proshcard", "app_subtitle": "Create a new learning preset or import an existing file.", "preset_title": "Preset Title", "preset_title_placeholder": "e.g., English Vocabulary Chapter 1",
@@ -456,7 +456,7 @@ const translations = {
         "time_remaining": "{time} remaining", "clear_time_message": "Clear Time", "mistake_count": "{count} times", "unnamed_preset": "Untitled Preset", "time_format": "{minutes}m {seconds}s",
         "answer_placeholder": "Type the answer and press Enter", "tooltips": { "language": "Change Language", "sound": "Toggle Sound", "theme": "Toggle Theme" }, "skip": "Skip",
         "enable_per_question_time_limit": "Enable per-question time limit", "seconds_per_question": "Seconds per question", "overall_time": "Total Time", "question_time": "Time Left",
-        "weekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], "format_cards": "Format", "back_to_raw": "Back to Raw", "add_card": "Add Card", "term_placeholder": "Term", "definition_placeholder": "Definition"
+        "weekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], "switch_to_raw": "Switch to Raw", "switch_to_formatted": "Back to Formatted", "add_card": "Add Card", "term_placeholder": "Term", "definition_placeholder": "Definition"
     },
     "ko": {
         "app_title": "Proshcard", "app_subtitle": "새 학습 세트를 만들거나 기존 파일을 가져옵니다.", "preset_title": "세트 제목", "preset_title_placeholder": "예: 영단어 Chapter 1", "card_data": "카드 데이터", "card_count": "({count}개 카드)",
@@ -471,7 +471,7 @@ const translations = {
         "time_remaining": "{time} 남음", "clear_time_message": "클리어 시간", "mistake_count": "{count}회", "unnamed_preset": "제목 없는 세트", "time_format": "{minutes}분 {seconds}초",
         "answer_placeholder": "답을 입력하고 Enter를 누르세요", "tooltips": { "language": "언어 변경", "sound": "소리 켜기/끄기", "theme": "테마 변경" }, "skip": "건너뛰기",
         "enable_per_question_time_limit": "문제별 시간 제한 활성화", "seconds_per_question": "문제당 초", "overall_time": "총 시간", "question_time": "남은 시간",
-        "weekdays": ["일", "월", "화", "수", "목", "금", "토"], "format_cards": "포맷화", "back_to_raw": "원시 텍스트로", "add_card": "카드 추가", "term_placeholder": "단어", "definition_placeholder": "뜻"
+        "weekdays": ["일", "월", "화", "수", "목", "금", "토"], "switch_to_raw": "Raw로 전환", "switch_to_formatted": "포맷으로 돌아가기", "add_card": "카드 추가", "term_placeholder": "단어", "definition_placeholder": "뜻"
     },
     "zh-CN": {
         "app_title": "Proshcard", "app_subtitle": "创建新的学习预设或导入现有文件。", "preset_title": "预设标题", "preset_title_placeholder": "例如：英语单词 第1章", "card_data": "卡片数据", "card_count": "({count} 张卡片)",
@@ -485,7 +485,7 @@ const translations = {
         "time_up_message": "时间到...", "time_up_remaining": "剩余 {count} 个问题", "clear_message": "已通关！", "time_remaining": "剩余 {time}", "clear_time_message": "通关时间",
         "mistake_count": "{count} 次", "unnamed_preset": "无标题预设", "time_format": "{minutes}分 {seconds}秒", "answer_placeholder": "输入答案并按 Enter",
         "tooltips": { "language": "更改语言", "sound": "切换声音", "theme": "切换主题" }, "skip": "跳过", "enable_per_question_time_limit": "启用单题时间限制",
-        "seconds_per_question": "每题秒数", "overall_time": "总时间", "question_time": "剩余时间", "weekdays": ["日", "一", "二", "三", "四", "五", "六"], "format_cards": "格式化", "back_to_raw": "返回Raw", "add_card": "添加卡片", "term_placeholder": "词", "definition_placeholder": "释义"
+        "seconds_per_question": "每题秒数", "overall_time": "总时间", "question_time": "剩余时间", "weekdays": ["日", "一", "二", "三", "四", "五", "六"], "switch_to_raw": "切换到Raw", "switch_to_formatted": "回到格式化", "add_card": "添加卡片", "term_placeholder": "词", "definition_placeholder": "释义"
     },
     "zh-TW": {
         "app_title": "Proshcard", "app_subtitle": "建立新的學習預設或匯入現有檔案。", "preset_title": "預設標題", "preset_title_placeholder": "例如：英文單字 第1章", "card_data": "卡片資料", "card_count": "({count} 張卡片)",
@@ -499,7 +499,7 @@ const translations = {
         "time_up_message": "時間到...", "time_up_remaining": "剩餘 {count} 個問題", "clear_message": "已通關！", "time_remaining": "剩餘 {time}", "clear_time_message": "通關時間",
         "mistake_count": "{count} 次", "unnamed_preset": "無標題預設", "time_format": "{minutes}分 {seconds}秒", "answer_placeholder": "輸入答案並按 Enter",
         "tooltips": { "language": "更改語言", "sound": "切換聲音", "theme": "切換主題" }, "skip": "跳過", "enable_per_question_time_limit": "啟用單題時間限制",
-        "seconds_per_question": "每題秒數", "overall_time": "總時間", "question_time": "剩餘時間", "weekdays": ["日", "一", "二", "三", "四", "五", "六"], "format_cards": "格式化", "back_to_raw": "返回Raw", "add_card": "新增卡片", "term_placeholder": "詞", "definition_placeholder": "釋義"
+        "seconds_per_question": "每題秒數", "overall_time": "總時間", "question_time": "剩餘時間", "weekdays": ["日", "一", "二", "三", "四", "五", "六"], "switch_to_raw": "切換到Raw", "switch_to_formatted": "回到格式化", "add_card": "新增卡片", "term_placeholder": "詞", "definition_placeholder": "釋義"
     },
     "es": {
         "app_title": "Proshcard", "app_subtitle": "Crea un nuevo set de estudio o importa uno existente.", "preset_title": "Título del Set", "preset_title_placeholder": "Ej: Vocabulario de Inglés Cap. 1",
@@ -514,7 +514,7 @@ const translations = {
         "time_up_message": "¡Se acabó el tiempo!", "time_up_remaining": "{count} preguntas restantes", "clear_message": "¡Completado!", "time_remaining": "{time} restante", "clear_time_message": "Tiempo Total",
         "mistake_count": "{count} veces", "unnamed_preset": "Set sin título", "time_format": "{minutes}m {seconds}s", "answer_placeholder": "Escribe la respuesta y presiona Enter",
         "tooltips": { "language": "Cambiar Idioma", "sound": "Activar/Desactivar Sonido", "theme": "Cambiar Tema" }, "skip": "Saltar", "enable_per_question_time_limit": "Habilitar límite por pregunta",
-        "seconds_per_question": "Segundos por pregunta", "overall_time": "Tiempo Total", "question_time": "Tiempo Rest.", "weekdays": ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"], "format_cards": "Formatear", "back_to_raw": "Volver a Raw", "add_card": "Añadir Tarjeta", "term_placeholder": "Término", "definition_placeholder": "Definición"
+        "seconds_per_question": "Segundos por pregunta", "overall_time": "Tiempo Total", "question_time": "Tiempo Rest.", "weekdays": ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"], "switch_to_raw": "Cambiar a Raw", "switch_to_formatted": "Volver a Formato", "add_card": "Añadir Tarjeta", "term_placeholder": "Término", "definition_placeholder": "Definición"
     },
     "de": {
         "app_title": "Proshcard", "app_subtitle": "Erstelle ein neues Lernset oder importiere eine vorhandene Datei.", "preset_title": "Titel des Sets", "preset_title_placeholder": "z.B. Englisch Vokabeln Kapitel 1",
@@ -529,7 +529,7 @@ const translations = {
         "time_up_message": "Die Zeit ist um...", "time_up_remaining": "{count} Fragen übrig", "clear_message": "Geschafft!", "time_remaining": "{time} übrig", "clear_time_message": "Benötigte Zeit",
         "mistake_count": "{count} Mal", "unnamed_preset": "Unbenanntes Set", "time_format": "{minutes}m {seconds}s", "answer_placeholder": "Antwort eingeben und Enter drücken",
         "tooltips": { "language": "Sprache ändern", "sound": "Ton umschalten", "theme": "Thema wechseln" }, "skip": "Überspringen", "enable_per_question_time_limit": "Zeitlimit pro Frage aktivieren",
-        "seconds_per_question": "Sekunden pro Frage", "overall_time": "Gesamtzeit", "question_time": "Verbleibend", "weekdays": ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"], "format_cards": "Formatieren", "back_to_raw": "Zurück zu Raw", "add_card": "Karte hinzufügen", "term_placeholder": "Begriff", "definition_placeholder": "Definition"
+        "seconds_per_question": "Sekunden pro Frage", "overall_time": "Gesamtzeit", "question_time": "Verbleibend", "weekdays": ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"], "switch_to_raw": "Zu Raw wechseln", "switch_to_formatted": "Zurück zum Format", "add_card": "Karte hinzufügen", "term_placeholder": "Begriff", "definition_placeholder": "Definition"
     },
     "fr": {
         "app_title": "Proshcard", "app_subtitle": "Créez un nouveau set d'apprentissage ou importez un fichier existant.", "preset_title": "Titre du set", "preset_title_placeholder": "Ex: Vocabulaire Anglais Chapitre 1",
@@ -544,7 +544,7 @@ const translations = {
         "time_up_message": "Temps écoulé...", "time_up_remaining": "{count} questions restantes", "clear_message": "Terminé !", "time_remaining": "{time} restant", "clear_time_message": "Temps final",
         "mistake_count": "{count} fois", "unnamed_preset": "Set sans titre", "time_format": "{minutes}m {seconds}s", "answer_placeholder": "Tapez la réponse et appuyez sur Entrée",
         "tooltips": { "language": "Changer de langue", "sound": "Activer/Désactiver le son", "theme": "Changer de thème" }, "skip": "Passer", "enable_per_question_time_limit": "Activer la limite par question",
-        "seconds_per_question": "Secondes par question", "overall_time": "Temps total", "question_time": "Temps rest.", "weekdays": ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"], "format_cards": "Formater", "back_to_raw": "Retour à Raw", "add_card": "Ajouter Carte", "term_placeholder": "Terme", "definition_placeholder": "Définition"
+        "seconds_per_question": "Secondes par question", "overall_time": "Temps total", "question_time": "Temps rest.", "weekdays": ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"], "switch_to_raw": "Passer à Raw", "switch_to_formatted": "Retour au Format", "add_card": "Ajouter Carte", "term_placeholder": "Terme", "definition_placeholder": "Définition"
     }
 };
 
@@ -602,7 +602,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function parseInput(fromRaw = true) {
+    function parseInput(fromRaw) {
         if (fromRaw) {
             const input = ui.cardsInput.value.trim();
             const cardSeparator = ui.cardSeparatorInput.value === '\\n' ? '\n' : ui.cardSeparatorInput.value;
@@ -617,7 +617,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ui.formattedEditor.querySelectorAll('.formatted-card').forEach(cardEl => {
                 const term = cardEl.querySelector('.term-input').value.trim();
                 const definition = cardEl.querySelector('.def-input').value.trim();
-                if (term && definition) {
+                if (term || definition) {
                     cards.push({ term, definition });
                 }
             });
@@ -627,6 +627,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startQuiz() {
         playSound('click');
+        saveSetupState(); 
+        const isFormattedView = !ui.formattedEditorContainer.classList.contains('hidden');
+        if (isFormattedView) {
+            syncFormattedToRaw();
+        }
+
         const repetitions = parseInt(ui.repetitionsInput.value, 10);
         const timeMin = parseInt(ui.timeLimitMinInput.value, 10);
         const timeSec = parseInt(ui.timeLimitSecInput.value, 10);
@@ -637,12 +643,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
-        const isRawView = !ui.rawEditorContainer.classList.contains('hidden');
-        if(!isRawView) switchToRawView();
-
         let parsedCards;
         try {
-            parsedCards = parseInput(true);
+            parsedCards = parseInput(true).filter(c => c.term && c.definition);
         } catch (e) {
             alert(translations[currentLanguage].alert_invalid_input);
             return;
@@ -830,30 +833,35 @@ document.addEventListener('DOMContentLoaded', () => {
         navigateTo('results');
         clearInterval(state.timerId); state.timerId = null;
         state.elapsedTime = performance.now() - state.startTime;
-        ui.timeResultSummary.innerHTML = '';
+        updateResultsTexts(isTimeout);
+    }
+    
+    function updateResultsTexts(isTimeout = null) {
+        if(!screens.results.classList.contains('active')) return;
         const lang = translations[currentLanguage];
-        
         let timeResultHeader = '';
         let timeResultBody = '';
 
-        if (state.settings.timeLimitEnabled) {
-            if (isTimeout) {
-                playSound('fail');
-                const remainingCount = state.quizQueue.length - state.currentQuestionIndex;
-                timeResultHeader = `<h3>${lang.time_up_message}</h3>`;
-                timeResultBody = `<p>${lang.time_up_remaining.replace('{count}', remainingCount)}</p>`;
+        if (isTimeout !== null) {
+            if (state.settings.timeLimitEnabled) {
+                if (isTimeout) {
+                    playSound('fail');
+                    const remainingCount = state.quizQueue.length - state.currentQuestionIndex;
+                    timeResultHeader = `<h3>${lang.time_up_message}</h3>`;
+                    timeResultBody = `<p>${lang.time_up_remaining.replace('{count}', remainingCount)}</p>`;
+                } else {
+                    playSound('success');
+                    const remainingTime = formatTime(state.settings.timeLimit * 1000 - state.elapsedTime);
+                    timeResultHeader = `<h3>${lang.clear_message}</h3>`;
+                    timeResultBody = `<p>${lang.time_remaining.replace('{time}', remainingTime)}</p>`;
+                }
             } else {
-                playSound('success');
-                const remainingTime = formatTime(state.settings.timeLimit * 1000 - state.elapsedTime);
-                timeResultHeader = `<h3>${lang.clear_message}</h3>`;
-                timeResultBody = `<p>${lang.time_remaining.replace('{time}', remainingTime)}</p>`;
+                 playSound('success');
+                 timeResultHeader = `<h3 data-lang-key="clear_time_message">${lang.clear_time_message}</h3>`;
+                 timeResultBody = `<p>${formatTime(state.elapsedTime)}</p>`;
             }
-        } else {
-             playSound('success');
-             timeResultHeader = `<h3 data-lang-key="clear_time_message">${lang.clear_time_message}</h3>`;
-             timeResultBody = `<p>${formatTime(state.elapsedTime)}</p>`;
+            ui.timeResultSummary.innerHTML = timeResultHeader + timeResultBody;
         }
-        ui.timeResultSummary.innerHTML = timeResultHeader + timeResultBody;
 
         const accuracy = state.totalAnswers > 0 ? Math.round((state.correctAnswers / state.totalAnswers) * 100) : 0;
         ui.accuracyStat.textContent = `${accuracy}%`;
@@ -874,10 +882,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function handleExport(dataSource) {
         playSound('click');
-        const isRawView = !ui.rawEditorContainer.classList.contains('hidden');
-        if(!isRawView) switchToRawView();
+        const isFormattedView = !ui.formattedEditorContainer.classList.contains('hidden');
+        if(isFormattedView) syncFormattedToRaw();
 
-        const dataToExport = { title: dataSource.title, cards: dataSource.cards.map(card => ({term: card.term, definition: card.definition})) };
+        const cardsToExport = parseInput(true).filter(c => c.term && c.definition);
+        const dataToExport = { title: dataSource.title, cards: cardsToExport };
         const safeTitle = dataSource.title || 'proshcard_preset';
         const blob = new Blob([new TextEncoder().encode(JSON.stringify(dataToExport, null, 2))], {type: 'application/json;charset=utf-8'});
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${safeTitle}.json`;
@@ -892,19 +901,17 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const data = JSON.parse(e.target.result);
                 ui.titleInput.value = data.title || '';
-                ui.cardsInput.value = data.cards.map(card => `${card.term}${ui.termSeparatorInput.value}${card.definition}`).join(ui.cardSeparatorInput.value === '\\n' ? '\n' : ui.cardSeparatorInput.value);
-                updateCardCountPreview();
+                ui.cardsInput.value = data.cards.map(card => `${card.term || ''}${ui.termSeparatorInput.value}${card.definition || ''}`).join(ui.cardSeparatorInput.value === '\\n' ? '\n' : ui.cardSeparatorInput.value);
+                syncRawToFormatted();
                 saveSetupState();
-                const isFormattedView = !ui.formattedEditorContainer.classList.contains('hidden');
-                if(isFormattedView) switchToFormattedView();
             } catch (error) { alert(translations[currentLanguage].alert_import_failed); }
         };
         reader.readAsText(file); event.target.value = null;
     }
 
     function updateCardCountPreview() {
-        const isRawView = !ui.rawEditorContainer.classList.contains('hidden');
-        const count = parseInput(isRawView).length;
+        const isRawView = ui.formattedEditorContainer.classList.contains('hidden');
+        const count = parseInput(isRawView).filter(c => c.term && c.definition).length;
         ui.cardCountPreview.textContent = translations[currentLanguage].card_count.replace('{count}', count);
     }
     
@@ -919,8 +926,13 @@ document.addEventListener('DOMContentLoaded', () => {
     for(const key in iconSVGs){
         const temp = document.createElement('div'); temp.innerHTML = iconSVGs[key];
         const svgEl = temp.querySelector('svg');
-        svgEl.setAttribute('fill', 'none'); svgEl.setAttribute('stroke', 'currentColor');
-        svgEl.setAttribute('stroke-width', '2'); svgEl.setAttribute('stroke-linecap', 'round'); svgEl.setAttribute('stroke-linejoin', 'round');
+        if (key.includes('light') || key.includes('dark') || key.includes('language') || key.includes('sound')) {
+            svgEl.setAttribute('fill', 'none');
+            svgEl.setAttribute('stroke', 'currentColor');
+            svgEl.setAttribute('stroke-width', '2');
+            svgEl.setAttribute('stroke-linecap', 'round');
+            svgEl.setAttribute('stroke-linejoin', 'round');
+        }
         icons[key] = svgEl.outerHTML;
     }
 
@@ -963,10 +975,15 @@ document.addEventListener('DOMContentLoaded', () => {
         ui.themeToggle.title = langData.tooltips.theme;
         updateCardCountPreview();
         updateClock();
+        updateResultsTexts();
     }
     
     function saveSetupState() {
-        const state = {
+        const isFormattedView = !ui.formattedEditorContainer.classList.contains('hidden');
+        if (isFormattedView) {
+            syncFormattedToRaw();
+        }
+        const stateToSave = {
             title: ui.titleInput.value,
             cards: ui.cardsInput.value,
             termSeparator: ui.termSeparatorInput.value,
@@ -978,9 +995,10 @@ document.addEventListener('DOMContentLoaded', () => {
             timeLimitMin: ui.timeLimitMinInput.value,
             timeLimitSec: ui.timeLimitSecInput.value,
             perQuestionTimeLimit: ui.perQuestionTimeLimitCheckbox.checked,
-            perQuestionTimeLimitValue: ui.perQuestionTimeLimitInput.value
+            perQuestionTimeLimitValue: ui.perQuestionTimeLimitInput.value,
+            editorView: isFormattedView ? 'formatted' : 'raw'
         };
-        localStorage.setItem('proshcardSetup', JSON.stringify(state));
+        localStorage.setItem('proshcardSetup', JSON.stringify(stateToSave));
     }
 
     function loadSetupState() {
@@ -1002,69 +1020,75 @@ document.addEventListener('DOMContentLoaded', () => {
             ui.perQuestionTimeLimitCheckbox.checked = state.perQuestionTimeLimit || false;
             ui.perQuestionTimeLimitInput.value = state.perQuestionTimeLimitValue || '10';
             ui.perQuestionTimeLimitInput.disabled = !state.perQuestionTimeLimit;
+            
+            if (state.editorView === 'raw') {
+                switchToRawView(false);
+            } else {
+                syncRawToFormatted();
+            }
+        } else {
+            syncRawToFormatted();
         }
-        updateCardCountPreview();
     }
     
     function createFormattedCardElement({ term, definition }) {
         const cardEl = document.createElement('div');
         cardEl.className = 'formatted-card';
-
         const termInput = document.createElement('input');
-        termInput.type = 'text';
-        termInput.value = term;
-        termInput.className = 'term-input';
+        termInput.type = 'text'; termInput.value = term; termInput.className = 'term-input';
         termInput.placeholder = translations[currentLanguage].term_placeholder;
-        termInput.oninput = saveSetupState;
-
+        termInput.oninput = () => { updateCardCountPreview(); saveSetupState(); };
         const defInput = document.createElement('input');
-        defInput.type = 'text';
-        defInput.value = definition;
-        defInput.className = 'def-input';
+        defInput.type = 'text'; defInput.value = definition; defInput.className = 'def-input';
         defInput.placeholder = translations[currentLanguage].definition_placeholder;
-        defInput.oninput = saveSetupState;
-        
+        defInput.oninput = () => { updateCardCountPreview(); saveSetupState(); };
         const deleteBtn = document.createElement('button');
-        deleteBtn.innerHTML = '&times;';
-        deleteBtn.className = 'delete-card-btn';
+        deleteBtn.innerHTML = '&times;'; deleteBtn.className = 'delete-card-btn';
         deleteBtn.onclick = () => {
             cardEl.remove();
             updateCardCountPreview();
-            switchToRawView();
-            switchToFormattedView();
             saveSetupState();
         };
-
         cardEl.append(termInput, defInput, deleteBtn);
         return cardEl;
     }
-
-    function switchToFormattedView() {
-        ui.formattedEditor.innerHTML = '';
-        const cards = parseInput(true);
-        cards.forEach(card => {
-            ui.formattedEditor.appendChild(createFormattedCardElement(card));
-        });
-        ui.rawEditorContainer.classList.add('hidden');
-        ui.separatorsContainer.classList.add('hidden');
-        ui.formattedEditorContainer.classList.remove('hidden');
-        updateCardCountPreview();
-    }
-
-    function switchToRawView() {
+    
+    function syncFormattedToRaw() {
         const cards = parseInput(false);
         const cardSeparator = ui.cardSeparatorInput.value === '\\n' ? '\n' : ui.cardSeparatorInput.value;
         const termSeparator = ui.termSeparatorInput.value;
         ui.cardsInput.value = cards.map(c => `${c.term}${termSeparator}${c.definition}`).join(cardSeparator);
-        ui.rawEditorContainer.classList.remove('hidden');
-        ui.separatorsContainer.classList.remove('hidden');
-        ui.formattedEditorContainer.classList.add('hidden');
+    }
+
+    function syncRawToFormatted() {
+        ui.formattedEditor.innerHTML = '';
+        const cards = parseInput(true);
+        if (cards.length > 0) {
+            cards.forEach(card => ui.formattedEditor.appendChild(createFormattedCardElement(card)));
+        } else {
+            ui.formattedEditor.appendChild(createFormattedCardElement({term: '', definition: ''}));
+        }
         updateCardCountPreview();
+    }
+    
+    function switchToFormattedView(sync = true) {
+        if (sync) syncRawToFormatted();
+        ui.rawEditorContainer.classList.add('hidden');
+        ui.separatorsContainer.classList.add('hidden');
+        ui.formattedEditorContainer.classList.remove('hidden');
         saveSetupState();
     }
 
-    ui.formatBtn.addEventListener('click', switchToFormattedView);
-    ui.backToRawBtn.addEventListener('click', switchToRawView);
+    function switchToRawView(sync = true) {
+        if (sync) syncFormattedToRaw();
+        ui.rawEditorContainer.classList.remove('hidden');
+        ui.separatorsContainer.classList.remove('hidden');
+        ui.formattedEditorContainer.classList.add('hidden');
+        saveSetupState();
+    }
+
+    ui.formatBtn.addEventListener('click', () => switchToFormattedView());
+    ui.backToRawBtn.addEventListener('click', () => switchToRawView());
     ui.addCardBtn.addEventListener('click', () => {
         ui.formattedEditor.appendChild(createFormattedCardElement({term: '', definition: ''}));
         updateCardCountPreview();
@@ -1072,7 +1096,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.querySelectorAll('#setup-screen input, #setup-screen textarea').forEach(el => {
-        el.addEventListener('input', saveSetupState);
         el.addEventListener('change', saveSetupState);
     });
 
@@ -1093,11 +1116,11 @@ document.addEventListener('DOMContentLoaded', () => {
     ui.stopBtn.addEventListener('click', () => { if (confirm(translations[currentLanguage].confirm_stop_quiz)) { playSound('click'); navigateTo('setup'); } });
     ui.importFileBtn.addEventListener('change', handleImport);
     ui.exportSetupBtn.addEventListener('click', () => {
-        const cards = parseInput(!ui.rawEditorContainer.classList.contains('hidden'));
+        const cards = parseInput(ui.rawEditorContainer.classList.contains('hidden')).filter(c => c.term && c.definition);
         if (cards.length > 0) handleExport({title: ui.titleInput.value.trim(), cards}); else alert(translations[currentLanguage].alert_no_export_data);
     });
     ui.exportResultsBtn.addEventListener('click', () => handleExport({title: state.title, cards: state.cards}));
-    ui.restartBtn.addEventListener('click', () => { playSound('click'); startQuiz()});
+    ui.restartBtn.addEventListener('click', () => { playSound('click'); initState(); startQuiz()});
     ui.newSetBtn.addEventListener('click', () => { playSound('click'); navigateTo('setup'); });
     
     ui.languageToggle.addEventListener('click', () => ui.languageModal.classList.add('show'));
