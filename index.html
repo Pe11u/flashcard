@@ -6,6 +6,17 @@
     <title>Proshcard</title>
     <style>
         :root {
+            --shadow-light: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
+            --shadow-dark: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            --transition-speed: 0.3s;
+            --transition-fast: 0.15s;
+            --border-radius: 8px;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", "Helvetica Neue", "LiHei Pro", "Hiragino Kaku Gothic ProN", "メイリオ", meiryo, sans-serif;
+            --correct-color: #2ea043;
+            --incorrect-color: #da3633;
+            --warning-color: #f7b731;
+        }
+        html {
             --primary-color: #0d1117;
             --secondary-color: #161b22;
             --border-color: #30363d;
@@ -13,22 +24,35 @@
             --text-secondary-color: #8b949e;
             --accent-color: #58a6ff;
             --accent-hover-color: #79c0ff;
-            --correct-color: #2ea043;
-            --incorrect-color: #da3633;
-            --warning-color: #f7b731;
-            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", "Helvetica Neue", "LiHei Pro", "Hiragino Kaku Gothic ProN", "メイリオ", meiryo, sans-serif;
-            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            --border-radius: 8px;
-            --transition-speed: 0.3s;
+            --card-shadow: var(--shadow-dark);
+            --scrollbar-thumb-color: #30363d;
+            --scrollbar-thumb-hover-color: #484f58;
+        }
+        html[data-theme='light'] {
+            --primary-color: #f6f8fa;
+            --secondary-color: #ffffff;
+            --border-color: #d0d7de;
+            --text-color: #24292f;
+            --text-secondary-color: #57606a;
+            --accent-color: #0969da;
+            --accent-hover-color: #2c85e5;
+            --card-shadow: var(--shadow-light);
+            --scrollbar-thumb-color: #d0d7de;
+            --scrollbar-thumb-hover-color: #afb8c1;
         }
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-        html, body {
-            height: 100%;
+        ::-webkit-scrollbar { width: 12px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--scrollbar-thumb-color);
+            border-radius: 6px;
+            border: 3px solid var(--secondary-color);
         }
+        ::-webkit-scrollbar-thumb:hover { background-color: var(--scrollbar-thumb-hover-color); }
         body {
             background-color: var(--primary-color);
             color: var(--text-color);
@@ -36,15 +60,18 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            height: 100vh;
             padding: 15px;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            overflow: hidden;
         }
         .container {
             width: 100%;
             height: 100%;
             max-width: 900px;
-            max-height: 750px;
+            max-height: 800px;
             background-color: var(--secondary-color);
             border-radius: var(--border-radius);
             box-shadow: var(--card-shadow);
@@ -52,139 +79,131 @@
             flex-direction: column;
             position: relative;
             overflow: hidden;
+            transition: background-color var(--transition-speed), box-shadow var(--transition-speed);
         }
-        .screen {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(20px);
-            transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease, visibility 0s var(--transition-speed);
-        }
-        .screen-content {
-             padding: 30px 40px;
-             overflow-y: auto;
-             flex-grow: 1;
-        }
-        .screen.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-            transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
-        }
-        h1, h2, h3 {
-            font-weight: 600;
-            color: var(--text-color);
-            margin-bottom: 20px;
-        }
-        h1 { font-size: 2rem; }
-        h2 { font-size: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;}
-        h3 { font-size: 1.2rem; margin-bottom: 10px; color: var(--text-secondary-color);}
-        .input-group {
-            margin-bottom: 20px;
-        }
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-secondary-color);
-            font-weight: 500;
-        }
-        .input-group input[type="text"],
-        .input-group input[type="number"],
-        .input-group textarea {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--primary-color);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
-            color: var(--text-color);
-            font-family: var(--font-family);
-            font-size: 1rem;
-            transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
-        }
-        .input-group input[type="text"]:focus,
-        .input-group input[type="number"]:focus,
-        .input-group textarea:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.2);
-        }
-        #cards-input {
-            height: 180px;
-            resize: vertical;
-        }
-        .options-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        .settings-section {
-            margin-top: 15px;
-            margin-bottom: 20px;
-            padding: 20px;
-            background-color: var(--primary-color);
-            border-radius: var(--border-radius);
-        }
-        .time-limit-inputs { display: flex; gap: 10px; }
-        .checkbox-group { display: flex; align-items: center; gap: 10px; padding: 12px 0;}
-        .checkbox-group label { margin-bottom: 0; cursor: pointer; }
-        .screen-footer {
-            padding: 20px 40px;
-            background-color: rgba(16, 17, 22, 0.7);
-            border-top: 1px solid var(--border-color);
-            backdrop-filter: blur(5px);
-        }
-        .footer-actions {
+        .app-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 0 20px;
+            height: 50px;
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+            user-select: none;
         }
-        .btn, input[type="file"]::-webkit-file-upload-button {
-            display: inline-block;
-            background-color: var(--accent-color);
-            color: var(--primary-color) !important;
-            font-weight: 600;
-            text-align: center;
-            border: none;
-            padding: 12px 24px;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            text-decoration: none;
-            transition: background-color var(--transition-speed), transform var(--transition-speed);
-            font-size: 1rem;
+        #clock {
+            color: var(--text-secondary-color);
+            font-size: 0.9em;
+            font-variant-numeric: tabular-nums;
         }
-        .btn:hover, input[type="file"]::-webkit-file-upload-button:hover { background-color: var(--accent-hover-color); transform: translateY(-2px); }
+        .header-controls { display: flex; align-items: center; gap: 5px; }
+        .icon-btn {
+            background: none; border: none; width: 36px; height: 36px; border-radius: 50%;
+            cursor: pointer; color: var(--text-secondary-color);
+            display: flex; justify-content: center; align-items: center;
+            transition: all var(--transition-fast);
+        }
+        .icon-btn:hover { background-color: var(--border-color); color: var(--text-color); }
+        .icon-btn svg { width: 20px; height: 20px; }
+        .screen {
+            flex-grow: 1; display: flex; flex-direction: column;
+            position: absolute; width: 100%; height: calc(100% - 50px);
+            top: 50px; left: 0;
+            opacity: 0; visibility: hidden;
+            transform: translateY(20px);
+            transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease, visibility 0s var(--transition-speed);
+        }
+        .screen-content { padding: 30px 40px; overflow-y: auto; flex-grow: 1; }
+        .screen.active { opacity: 1; visibility: visible; transform: translateY(0); }
+        h1, h2, h3 { font-weight: 600; color: var(--text-color); margin-bottom: 20px; }
+        h1 { font-size: 2.2rem; }
+        h2 { font-size: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;}
+        h3 { font-size: 1.2rem; margin-bottom: 10px; color: var(--text-secondary-color);}
+        .input-group { margin-bottom: 20px; }
+        .input-group label {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 8px; color: var(--text-secondary-color); font-weight: 500;
+        }
+        #card-count-preview {
+            font-size: 0.9em; font-weight: normal; background-color: var(--border-color);
+            color: var(--text-color); padding: 2px 8px; border-radius: 10px;
+        }
+        .input-group input[type="text"], .input-group input[type="number"], .input-group textarea {
+            width: 100%; padding: 12px; background-color: var(--primary-color); border: 1px solid var(--border-color);
+            border-radius: var(--border-radius); color: var(--text-color); font-family: var(--font-family); font-size: 1rem;
+            transition: border-color var(--transition-speed), box-shadow var(--transition-speed), background-color var(--transition-speed);
+        }
+        .input-group input[type="text"]:focus, .input-group input[type="number"]:focus, .input-group textarea:focus {
+            outline: none; border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color) 25%, transparent);
+        }
+        #cards-input { height: 180px; resize: vertical; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .settings-section {
+            margin-top: 15px; margin-bottom: 20px; padding: 20px; background-color: var(--primary-color);
+            border-radius: var(--border-radius); transition: background-color var(--transition-speed);
+        }
+        .checkbox-group { display: flex; align-items: center; gap: 10px; position: relative; cursor: pointer; user-select: none; }
+        .checkbox-group input { position: absolute; opacity: 0; height: 0; width: 0; }
+        .checkbox-group label { margin-bottom: 0; display: flex; align-items: center; gap: 10px; }
+        .checkbox-group .checkmark {
+            height: 20px; width: 20px; background-color: var(--primary-color); border: 2px solid var(--border-color);
+            border-radius: 4px; transition: all var(--transition-fast); display: inline-flex; justify-content: center; align-items: center;
+        }
+        .checkbox-group:hover .checkmark { border-color: var(--accent-color); }
+        .checkbox-group input:checked ~ .checkmark { background-color: var(--accent-color); border-color: var(--accent-color); }
+        .checkbox-group .checkmark svg { width: 14px; height: 14px; stroke: white; display: none; }
+        .checkbox-group input:checked ~ .checkmark svg { display: block; }
+        .screen-footer {
+            padding: 20px 40px; background-color: color-mix(in srgb, var(--secondary-color) 70%, transparent);
+            border-top: 1px solid var(--border-color); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
+        }
+        .footer-actions { display: flex; justify-content: space-between; align-items: center; }
+        .btn {
+            display: inline-block; background-color: var(--accent-color); color: #ffffff !important;
+            font-weight: 600; text-align: center; border: none; padding: 12px 24px;
+            border-radius: var(--border-radius); cursor: pointer; text-decoration: none;
+            transition: background-color var(--transition-speed), transform var(--transition-fast); font-size: 1rem;
+        }
+        .btn:hover { background-color: var(--accent-hover-color); transform: translateY(-2px); }
+        .btn:active { transform: translateY(0) scale(0.98); }
         .btn-secondary { background-color: var(--border-color); color: var(--text-color) !important; }
-        .btn-secondary:hover { background-color: #3e444b; }
-        .btn-icon { background: transparent; color: var(--text-secondary-color) !important; border: 1px solid var(--border-color); padding: 8px 16px; }
-        .btn-icon:hover { background: var(--border-color); color: var(--text-color) !important; }
+        .btn-secondary:hover { background-color: color-mix(in srgb, var(--text-secondary-color) 30%, var(--border-color)); }
         input[type="file"] { display: none; }
         .footer-actions div { display: flex; gap: 10px; }
         .quiz-screen .screen-content { display: flex; flex-direction: column; }
         .quiz-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .btn-icon { background: transparent; color: var(--text-secondary-color) !important; border: 1px solid var(--border-color); padding: 8px 16px; }
+        .btn-icon:hover { background: var(--border-color); color: var(--text-color) !important; }
         .progress-bar { width: 100%; height: 8px; background-color: var(--border-color); border-radius: 4px; overflow: hidden; margin-top: 10px;}
         #progress-indicator { height: 100%; width: 0%; background-color: var(--accent-color); transition: width var(--transition-speed) ease;}
         .question-container { text-align: center; margin: 20px 0; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;}
-        .question-card { background-color: var(--primary-color); padding: 40px; border-radius: var(--border-radius); box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); position: relative; }
+        .question-card { background-color: var(--primary-color); padding: 40px; border-radius: var(--border-radius); box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); position: relative; }
         .question-card p { font-size: 1.8rem; line-height: 1.5; font-weight: 500; }
         .answer-container { margin-top: 30px; min-height: 130px; }
         .mcq-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .mcq-btn { background-color: var(--border-color); color: var(--text-color); border: none; padding: 18px; border-radius: var(--border-radius); font-size: 1.1rem; cursor: pointer; transition: all var(--transition-speed); text-align: left; }
-        .mcq-btn:hover:not(:disabled) { background-color: #3e444b; transform: translateY(-2px); }
+        .mcq-btn {
+            background-color: var(--border-color); color: var(--text-color); border: none; padding: 18px;
+            border-radius: var(--border-radius); font-size: 1.1rem; cursor: pointer;
+            transition: all var(--transition-fast); text-align: left;
+        }
+        .mcq-btn:hover:not(:disabled) { background-color: color-mix(in srgb, var(--text-secondary-color) 30%, var(--border-color)); transform: translateY(-2px); }
+        .mcq-btn:active:not(:disabled) { transform: translateY(0) scale(0.98); }
+        .mcq-btn.answered { opacity: 0.5; }
+        .mcq-btn.answered.correct { background-color: var(--correct-color); color: white; opacity: 1; transform: scale(1.02); }
+        .mcq-btn.answered.incorrect { background-color: var(--incorrect-color); color: white; opacity: 1; animation: shake 0.5s; }
+        .mcq-btn.answered.reveal { border: 2px solid var(--correct-color); background-color: transparent; opacity: 1; }
         #text-input { width: 100%; padding: 16px; font-size: 1.2rem; text-align: center; background-color: var(--primary-color); border: 1px solid var(--border-color); border-radius: var(--border-radius); color: var(--text-color); }
         .quiz-footer { min-height: 50px; display: flex; justify-content: space-between; align-items: center; padding: 0 40px 20px; }
         #timer-display { font-size: 1.2rem; font-weight: bold; font-variant-numeric: tabular-nums; transition: color 0.3s; }
         #timer-display.warning { color: var(--warning-color); animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
         #feedback { font-size: 1rem; font-weight: bold; text-align: right; flex-grow: 1;}
         #feedback.correct { color: var(--correct-color); } #feedback.incorrect { color: var(--incorrect-color); }
-        .result-indicator { position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; border-radius: 10px; border: 4px solid; opacity: 0; transform: scale(0.95); transition: all var(--transition-speed) ease-out; pointer-events: none; }
+        .result-indicator {
+            position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; border-radius: 10px;
+            border: 4px solid; opacity: 0; transform: scale(0.95); transition: all var(--transition-speed) ease-out; pointer-events: none;
+        }
         .result-indicator.correct { border-color: var(--correct-color); opacity: 1; transform: scale(1); }
         .result-indicator.incorrect { border-color: var(--incorrect-color); opacity: 1; transform: scale(1); }
         .summary { text-align: center; padding: 20px; background: var(--primary-color); border-radius: var(--border-radius); margin-bottom: 25px; }
@@ -193,21 +212,40 @@
         #time-result-summary p { font-size: 1.8rem; font-weight: 600; font-variant-numeric: tabular-nums;}
         #mistake-ranking { flex-grow: 1; overflow-y: auto; padding-right: 15px; }
         #mistake-ranking-list { list-style: none; }
-        .mistake-item { display: flex; justify-content: space-between; align-items: center; background: var(--primary-color); padding: 12px 18px; border-radius: var(--border-radius); margin-bottom: 10px; border-left: 5px solid var(--incorrect-color); }
+        .mistake-item {
+            display: flex; justify-content: space-between; align-items: center; background: var(--primary-color);
+            padding: 12px 18px; border-radius: var(--border-radius); margin-bottom: 10px; border-left: 5px solid var(--incorrect-color);
+        }
         .mistake-item span:first-child { font-weight: bold; }
         .mistake-item span:last-child { background-color: var(--incorrect-color); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.9em; }
         .results-actions { display: flex; gap: 15px; flex-wrap: wrap; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
         @media (max-width: 768px) {
             body { padding: 0; }
-            .container { max-height: 100%; border-radius: 0;}
+            .container { height: 100%; max-height: 100%; border-radius: 0;}
             .screen-content { padding: 20px; } .mcq-options { grid-template-columns: 1fr; }
             h1 { font-size: 1.8rem; } h2 { font-size: 1.3rem; }
+            .app-header { height: 44px; padding: 0 10px; }
+            .screen { height: calc(100% - 44px); top: 44px; }
             .quiz-footer { padding: 0 20px 15px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <header class="app-header">
+            <div id="clock"></div>
+            <div class="header-controls">
+                <button id="sound-toggle" class="icon-btn" title="サウンドを切り替え"></button>
+                <button id="theme-toggle" class="icon-btn" title="テーマを切り替え"></button>
+            </div>
+        </header>
+
         <div id="setup-screen" class="screen active">
             <div class="screen-content">
                 <h1>Proshcard</h1>
@@ -217,45 +255,25 @@
                     <input type="text" id="title" placeholder="例：英単語 Chapter 1">
                 </div>
                 <div class="input-group">
-                    <label for="cards-input">カードデータ</label>
+                    <label for="cards-input">カードデータ<span id="card-count-preview">(0 カード)</span></label>
                     <textarea id="cards-input" placeholder="ここに単語と意味のリストを入力します。&#10;例:&#10;apple,リンゴ&#10;banana,バナナ&#10;..."></textarea>
                 </div>
                 <div class="options-grid">
-                    <div class="input-group">
-                        <label for="term-separator">単語と意味の区切り文字</label>
-                        <input type="text" id="term-separator" value=",">
-                    </div>
-                    <div class="input-group">
-                        <label for="card-separator">カード間の区切り文字 (改行は \n)</label>
-                        <input type="text" id="card-separator" value="\n">
-                    </div>
+                    <div class="input-group"><label for="term-separator">単語と意味の区切り文字</label><input type="text" id="term-separator" value=","></div>
+                    <div class="input-group"><label for="card-separator">カード間の区切り文字 (改行は \n)</label><input type="text" id="card-separator" value="\n"></div>
                 </div>
                 <div class="settings-section">
                     <h3>学習設定</h3>
                     <div class="options-grid">
-                         <div class="input-group">
-                            <label for="repetitions-input">各問題の出題回数</label>
-                            <input type="number" id="repetitions-input" value="1" min="1" max="10">
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="case-sensitive-checkbox">
-                            <label for="case-sensitive-checkbox">タイピングで大文字/小文字を区別</label>
-                        </div>
+                         <div class="input-group"><label for="repetitions-input">各問題の出題回数</label><input type="number" id="repetitions-input" value="1" min="1" max="10"></div>
+                         <label class="checkbox-group"><input type="checkbox" id="reverse-cards-checkbox"><span class="checkmark"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></span>単語と意味を反転する</label>
                     </div>
+                    <label class="checkbox-group"><input type="checkbox" id="case-sensitive-checkbox"><span class="checkmark"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></span>タイピングで大文字/小文字を区別</label>
                      <h3>時間制限</h3>
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="time-limit-checkbox">
-                        <label for="time-limit-checkbox">時間制限を有効にする</label>
-                    </div>
-                    <div class="time-limit-inputs options-grid">
-                        <div class="input-group">
-                            <label for="time-limit-min">分</label>
-                            <input type="number" id="time-limit-min" value="1" min="0" disabled>
-                        </div>
-                        <div class="input-group">
-                            <label for="time-limit-sec">秒</label>
-                            <input type="number" id="time-limit-sec" value="0" min="0" max="59" disabled>
-                        </div>
+                    <label class="checkbox-group"><input type="checkbox" id="time-limit-checkbox"><span class="checkmark"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></span>時間制限を有効にする</label>
+                    <div class="options-grid">
+                        <div class="input-group"><label for="time-limit-min">分</label><input type="number" id="time-limit-min" value="1" min="0" disabled></div>
+                        <div class="input-group"><label for="time-limit-sec">秒</label><input type="number" id="time-limit-sec" value="0" min="0" max="59" disabled></div>
                     </div>
                 </div>
             </div>
@@ -263,56 +281,50 @@
                 <div class="footer-actions">
                     <div>
                         <label for="import-file" class="btn btn-secondary">インポート</label>
-                        <input type="file" id="import-file" accept=".json">
-                        <button id="export-setup-btn" class="btn btn-secondary">エクスポート</button>
-                    </div>
-                    <button id="start-btn" class="btn">学習を始める</button>
+                        <input type="file" id="import-file" accept=".json"><button id="export-setup-btn" class="btn btn-secondary">エクスポート</button>
+                    </div><button id="start-btn" class="btn">学習を始める</button>
                 </div>
             </div>
         </div>
+
         <div id="quiz-screen" class="screen">
             <div class="screen-content">
                 <div class="quiz-header">
-                    <button id="stop-btn" class="btn-icon">中止する</button>
-                    <div style="text-align: right;">
-                        <h2 id="quiz-title" style="margin-bottom: 5px; border: none;"></h2>
-                        <p id="quiz-phase" style="color: var(--text-secondary-color);"></p>
-                    </div>
+                    <button id="stop-btn" class="btn btn-icon">中止する</button>
+                    <div style="text-align: right;"><h2 id="quiz-title" style="margin-bottom: 5px; border: none;"></h2><p id="quiz-phase" style="color: var(--text-secondary-color);"></p></div>
                 </div>
                 <div>
-                     <div id="progress-counter" style="text-align: right; color: var(--text-secondary-color);"></div>
-                     <div class="progress-bar"><div id="progress-indicator"></div></div>
+                     <div id="progress-counter" style="text-align: right; color: var(--text-secondary-color);"></div><div class="progress-bar"><div id="progress-indicator"></div></div>
                 </div>
                 <div class="question-container">
-                    <div class="question-card"><p id="question-text"></p><div class="result-indicator"></div></div>
-                    <div class="answer-container" id="answer-container"></div>
+                    <div class="question-card"><p id="question-text"></p><div class="result-indicator"></div></div><div class="answer-container" id="answer-container"></div>
                 </div>
             </div>
              <div class="quiz-footer">
-                <div id="timer-display">0分 0.000秒</div>
-                <p id="feedback"></p>
+                <div id="timer-display">0分 0.000秒</div><p id="feedback"></p>
             </div>
         </div>
+        
         <div id="results-screen" class="screen">
             <div class="screen-content">
                 <h2>学習結果</h2>
                 <div id="time-result-summary" class="summary"></div>
-                <div id="accuracy-summary" class="summary">
-                    <h3>全体正答率</h3>
-                    <p class="summary-stat" id="accuracy-stat">0%</p>
-                </div>
-                <h3 id="mistake-title">最も間違えた単語</h3>
-                <div id="mistake-ranking"><ul id="mistake-ranking-list"></ul></div>
+                <div id="accuracy-summary" class="summary"><h3>全体正答率</h3><p class="summary-stat" id="accuracy-stat">0%</p></div>
+                <h3 id="mistake-title">最も間違えた単語</h3><div id="mistake-ranking"><ul id="mistake-ranking-list"></ul></div>
             </div>
             <div class="screen-footer">
                  <div class="results-actions">
-                    <button id="restart-btn" class="btn">もう一度学習する</button>
-                    <button id="export-results-btn" class="btn">このプリセットをエクスポート</button>
-                    <button id="new-set-btn" class="btn btn-secondary">新しいプリセットを作成</button>
+                    <button id="restart-btn" class="btn">もう一度学習する</button><button id="export-results-btn" class="btn">このプリセットをエクスポート</button><button id="new-set-btn" class="btn btn-secondary">スタート画面に戻る</button>
                 </div>
             </div>
         </div>
     </div>
+    <audio id="audio-click" src="sounds/click.mp3" preload="auto"></audio>
+    <audio id="audio-correct" src="sounds/correct.mp3" preload="auto"></audio>
+    <audio id="audio-incorrect" src="sounds/incorrect.mp3" preload="auto"></audio>
+    <audio id="audio-success" src="sounds/success.mp3" preload="auto"></audio>
+    <audio id="audio-fail" src="sounds/fail.mp3" preload="auto"></audio>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const screens = { setup: document.getElementById('setup-screen'), quiz: document.getElementById('quiz-screen'), results: document.getElementById('results-screen') };
@@ -320,23 +332,28 @@ document.addEventListener('DOMContentLoaded', () => {
         titleInput: document.getElementById('title'), cardsInput: document.getElementById('cards-input'), termSeparatorInput: document.getElementById('term-separator'),
         cardSeparatorInput: document.getElementById('card-separator'), repetitionsInput: document.getElementById('repetitions-input'),
         caseSensitiveCheckbox: document.getElementById('case-sensitive-checkbox'), timeLimitCheckbox: document.getElementById('time-limit-checkbox'),
-        timeLimitMinInput: document.getElementById('time-limit-min'), timeLimitSecInput: document.getElementById('time-limit-sec'),
-        startBtn: document.getElementById('start-btn'), importFileBtn: document.getElementById('import-file'), exportSetupBtn: document.getElementById('export-setup-btn'),
-        stopBtn: document.getElementById('stop-btn'), quizTitle: document.getElementById('quiz-title'), quizPhase: document.getElementById('quiz-phase'),
-        progressCounter: document.getElementById('progress-counter'), progressIndicator: document.getElementById('progress-indicator'),
+        timeLimitMinInput: document.getElementById('time-limit-min'), timeLimitSecInput: document.getElementById('time-limit-sec'), cardCountPreview: document.getElementById('card-count-preview'),
+        reverseCardsCheckbox: document.getElementById('reverse-cards-checkbox'), startBtn: document.getElementById('start-btn'), importFileBtn: document.getElementById('import-file'),
+        exportSetupBtn: document.getElementById('export-setup-btn'), stopBtn: document.getElementById('stop-btn'), quizTitle: document.getElementById('quiz-title'),
+        quizPhase: document.getElementById('quiz-phase'), progressCounter: document.getElementById('progress-counter'), progressIndicator: document.getElementById('progress-indicator'),
         questionText: document.getElementById('question-text'), answerContainer: document.getElementById('answer-container'), feedback: document.getElementById('feedback'),
         timerDisplay: document.getElementById('timer-display'), accuracyStat: document.getElementById('accuracy-stat'), timeResultSummary: document.getElementById('time-result-summary'),
-        accuracySummary: document.getElementById('accuracy-summary'), mistakeRankingList: document.getElementById('mistake-ranking-list'),
-        mistakeTitle: document.getElementById('mistake-title'), restartBtn: document.getElementById('restart-btn'), exportResultsBtn: document.getElementById('export-results-btn'), newSetBtn: document.getElementById('new-set-btn'),
+        mistakeRankingList: document.getElementById('mistake-ranking-list'), mistakeTitle: document.getElementById('mistake-title'), restartBtn: document.getElementById('restart-btn'),
+        exportResultsBtn: document.getElementById('export-results-btn'), newSetBtn: document.getElementById('new-set-btn'), themeToggle: document.getElementById('theme-toggle'),
+        soundToggle: document.getElementById('sound-toggle'), clock: document.getElementById('clock'),
+    };
+    const sounds = {
+        click: document.getElementById('audio-click'), correct: document.getElementById('audio-correct'), incorrect: document.getElementById('audio-incorrect'),
+        success: document.getElementById('audio-success'), fail: document.getElementById('audio-fail'),
     };
     let state = {};
 
     function initState() {
         state = {
             cards: [], quizQueue: [], currentQuestionIndex: 0, mcqBoundary: 0, title: '', correctAnswers: 0, totalAnswers: 0, sessionCardStats: [],
-            timerId: null, startTime: 0, elapsedTime: 0,
+            timerId: null, clockId: null, startTime: 0, elapsedTime: 0, soundEnabled: localStorage.getItem('soundEnabled') !== 'false',
             settings: {
-                repetitions: 1, caseSensitive: false, timeLimitEnabled: false, timeLimit: 0
+                repetitions: 1, caseSensitive: false, timeLimitEnabled: false, timeLimit: 0, reverseCards: false
             }
         };
     }
@@ -346,12 +363,19 @@ document.addEventListener('DOMContentLoaded', () => {
         Object.values(screens).forEach(screen => screen.classList.remove('active'));
         screens[screenName].classList.add('active');
     }
+    
+    function playSound(soundKey) {
+        if (state.soundEnabled && sounds[soundKey]) {
+            sounds[soundKey].currentTime = 0;
+            sounds[soundKey].play().catch(() => {});
+        }
+    }
 
     function parseInput() {
         const input = ui.cardsInput.value.trim();
         const cardSeparator = ui.cardSeparatorInput.value === '\\n' ? '\n' : ui.cardSeparatorInput.value;
         const termSeparator = ui.termSeparatorInput.value;
-        if (!input) return [];
+        if (!input || !cardSeparator || !termSeparator) return [];
         return input.split(cardSeparator).map(line => {
             const parts = line.split(termSeparator);
             return (parts.length >= 2) ? { term: parts[0].trim(), definition: parts[1].trim() } : null;
@@ -359,22 +383,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function startQuiz() {
+        playSound('click');
         const parsedCards = parseInput();
         if (parsedCards.length < 4) { alert('クイズには最低4つのカードが必要です。'); return; }
 
         initState();
         state.cards = parsedCards;
-        state.sessionCardStats = state.cards.map(card => ({ ...card, incorrectCount: 0, retries: 0 }));
         state.settings = {
             repetitions: parseInt(ui.repetitionsInput.value, 10) || 1, caseSensitive: ui.caseSensitiveCheckbox.checked,
-            timeLimitEnabled: ui.timeLimitCheckbox.checked,
+            timeLimitEnabled: ui.timeLimitCheckbox.checked, reverseCards: ui.reverseCardsCheckbox.checked,
             timeLimit: (parseInt(ui.timeLimitMinInput.value, 10) || 0) * 60 + (parseInt(ui.timeLimitSecInput.value, 10) || 0)
         };
+
+        state.sessionCardStats = state.cards.map(card => {
+            const term = state.settings.reverseCards ? card.definition : card.term;
+            const definition = state.settings.reverseCards ? card.term : card.definition;
+            return { term, definition, originalTerm: card.term, incorrectCount: 0, retries: 0 };
+        });
         state.title = ui.titleInput.value.trim() || '無題のプリセット';
 
-        generateQuizQueue();
-        navigateTo('quiz');
-        renderQuestion();
+        generateQuizQueue(); navigateTo('quiz'); renderQuestion();
         
         state.startTime = performance.now();
         state.timerId = setInterval(updateTimer, 50);
@@ -399,9 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (remainingMs <= 10000 && !ui.timerDisplay.classList.contains('warning')) {
                  ui.timerDisplay.classList.add('warning');
             }
-            if (remainingMs <= 0) {
-                showResults(true);
-            }
+            if (remainingMs <= 0) { showResults(true); }
         } else {
             ui.timerDisplay.textContent = formatTime(elapsedMs);
         }
@@ -418,17 +444,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderQuestion() {
         clearFeedback();
         if (state.currentQuestionIndex >= state.quizQueue.length) { showResults(); return; }
-        
         const { type, cardRef } = state.quizQueue[state.currentQuestionIndex];
-        const isMcqPhase = state.currentQuestionIndex < state.mcqBoundary;
-        
         ui.quizTitle.textContent = state.title;
-        ui.quizPhase.textContent = isMcqPhase ? `フェーズ 1/2 : 四択クイズ` : `フェーズ 2/2 : タイピング`;
+        ui.quizPhase.textContent = state.currentQuestionIndex < state.mcqBoundary ? `フェーズ 1/2 : 四択クイズ` : `フェーズ 2/2 : タイピング`;
         ui.answerContainer.innerHTML = '';
         ui.progressCounter.textContent = `${state.currentQuestionIndex + 1} / ${state.quizQueue.length}`;
         ui.progressIndicator.style.width = `${((state.currentQuestionIndex + 1) / state.quizQueue.length) * 100}%`;
         ui.questionText.textContent = cardRef.definition;
-
         type === 'mcq' ? displayMCQ(cardRef) : displayTextInput(cardRef);
     }
 
@@ -445,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const btn = document.createElement('button');
             btn.className = 'mcq-btn';
             btn.textContent = option.term;
-            btn.onclick = () => checkAnswer(btn.textContent === correctCard.term, correctCard);
+            btn.onclick = (e) => checkAnswer(btn.textContent === correctCard.term, correctCard, e.currentTarget);
             container.appendChild(btn);
         });
         ui.answerContainer.appendChild(container);
@@ -453,30 +475,29 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function displayTextInput(correctCard) {
         const input = document.createElement('input');
-        input.type = 'text'; input.id = 'text-input'; input.placeholder = '答えを入力して Enter'; input.autocomplete = 'off';
+        input.type = 'text'; input.id = 'text-input'; input.placeholder = '答えを入力してEnter'; input.autocomplete = 'off';
         input.onkeydown = e => {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 let uAns = input.value.trim(), cAns = correctCard.term;
                 if (!state.settings.caseSensitive) { uAns = uAns.toLowerCase(); cAns = cAns.toLowerCase(); }
-                checkAnswer(uAns === cAns, correctCard);
+                checkAnswer(uAns === cAns, correctCard, e.currentTarget);
             }
         };
-        ui.answerContainer.appendChild(input);
-        input.focus();
+        ui.answerContainer.appendChild(input); input.focus();
     }
     
-    function checkAnswer(isCorrect, card) {
+    function checkAnswer(isCorrect, card, element) {
         state.totalAnswers++;
-        disableInputs();
+        disableInputs(element, card.term);
         const indicator = document.querySelector('.result-indicator');
         indicator.className = 'result-indicator'; void indicator.offsetWidth;
 
         if (isCorrect) {
-            state.correctAnswers++;
+            state.correctAnswers++; playSound('correct');
             ui.feedback.textContent = "正解！"; ui.feedback.className = 'correct'; indicator.classList.add('correct');
         } else {
-            card.incorrectCount++;
+            card.incorrectCount++; playSound('incorrect');
             ui.feedback.textContent = `不正解... 正解は: ${card.term}`; ui.feedback.className = 'incorrect'; indicator.classList.add('incorrect');
             if (card.retries < 2) {
                 card.retries++;
@@ -488,28 +509,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function clearFeedback() { ui.feedback.textContent = ''; document.querySelector('.result-indicator').className = 'result-indicator'; }
-    function disableInputs() { ui.answerContainer.querySelectorAll('button, input').forEach(el => el.disabled = true); }
+    function disableInputs(selectedElement, correctTerm) {
+        ui.answerContainer.querySelectorAll('button, input').forEach(el => el.disabled = true);
+        if (selectedElement && selectedElement.tagName === 'BUTTON') {
+             ui.answerContainer.querySelectorAll('button').forEach(btn => {
+                 btn.classList.add('answered');
+                 if(btn.textContent === correctTerm) {
+                    btn.classList.add(selectedElement.textContent === correctTerm ? 'correct' : 'reveal');
+                 } else if (btn === selectedElement) {
+                    btn.classList.add('incorrect');
+                 }
+             });
+        }
+    }
 
     function showResults(isTimeout = false) {
         navigateTo('results');
         clearInterval(state.timerId); state.timerId = null;
         state.elapsedTime = performance.now() - state.startTime;
-
         ui.timeResultSummary.innerHTML = '';
-        let timeHTML;
         if (state.settings.timeLimitEnabled) {
             if (isTimeout) {
-                const remainingQuestions = state.quizQueue.length - state.currentQuestionIndex;
-                timeHTML = `<h3>時間切れ...</h3><p>${remainingQuestions}問残っていました</p>`;
+                playSound('fail');
+                ui.timeResultSummary.innerHTML = `<h3>時間切れ...</h3><p>${state.quizQueue.length - state.currentQuestionIndex}問残っていました</p>`;
             } else {
-                const remainingTime = state.settings.timeLimit * 1000 - state.elapsedTime;
-                timeHTML = `<h3>クリア！</h3><p>${formatTime(remainingTime)} 残り</p>`;
+                playSound('success');
+                ui.timeResultSummary.innerHTML = `<h3>クリア！</h3><p>${formatTime(state.settings.timeLimit * 1000 - state.elapsedTime)} 残り</p>`;
             }
         } else {
-             timeHTML = `<h3>クリアタイム</h3><p>${formatTime(state.elapsedTime)}</p>`;
+             playSound('success');
+             ui.timeResultSummary.innerHTML = `<h3>クリアタイム</h3><p>${formatTime(state.elapsedTime)}</p>`;
         }
-        ui.timeResultSummary.innerHTML = timeHTML;
-
         const accuracy = state.totalAnswers > 0 ? Math.round((state.correctAnswers / state.totalAnswers) * 100) : 0;
         ui.accuracyStat.textContent = `${accuracy}%`;
         const mistakes = state.sessionCardStats.filter(card => card.incorrectCount > 0).sort((a, b) => b.incorrectCount - a.incorrectCount);
@@ -521,52 +551,95 @@ document.addEventListener('DOMContentLoaded', () => {
             mistakes.forEach(card => {
                 const li = document.createElement('li');
                 li.className = 'mistake-item';
-                li.innerHTML = `<span>${card.term}</span> <span>${card.incorrectCount} 回</span>`;
+                li.innerHTML = `<span>${card.originalTerm}</span> <span>${card.incorrectCount} 回</span>`;
                 ui.mistakeRankingList.appendChild(li);
             });
         }
     }
     
     function handleExport(dataSource) {
+        playSound('click');
         const dataToExport = { title: dataSource.title, cards: dataSource.cards.map(({term, definition}) => ({term, definition})) };
-        const safeTitle = dataToExport.title.replace(/[^a-z0-9]/gi, '_').toLowerCase() || 'flashcard_preset';
+        const safeTitle = dataSource.title || 'proshcard_preset';
         const blob = new Blob([JSON.stringify(dataToExport, null, 2)], {type: 'application/json'});
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${safeTitle}.json`;
         document.body.appendChild(a); a.click(); URL.revokeObjectURL(a.href); document.body.removeChild(a);
     }
     
     function handleImport(event) {
+        playSound('click');
         const file = event.target.files[0]; if (!file) return;
         const reader = new FileReader();
         reader.onload = e => {
             try {
                 const data = JSON.parse(e.target.result);
                 ui.titleInput.value = data.title || '';
-                ui.cardsInput.value = data.cards.map(card => `${card.term},${card.definition}`).join('\n');
-                ui.termSeparatorInput.value = ','; ui.cardSeparatorInput.value = '\\n';
+                ui.cardsInput.value = data.cards.map(card => `${card.term}${ui.termSeparatorInput.value}${card.definition}`).join(ui.cardSeparatorInput.value === '\\n' ? '\n' : ui.cardSeparatorInput.value);
+                updateCardCountPreview();
             } catch (error) { alert('ファイルの読み込みに失敗しました。'); }
         };
         reader.readAsText(file); event.target.value = null;
     }
 
-    ui.timeLimitCheckbox.addEventListener('change', (e) => {
-        [ui.timeLimitMinInput, ui.timeLimitSecInput].forEach(input => input.disabled = !e.target.checked);
-    });
-    ui.startBtn.addEventListener('click', startQuiz);
-    ui.stopBtn.addEventListener('click', () => navigateTo('setup'));
-    ui.importFileBtn.addEventListener('change', handleImport);
-    ui.exportSetupBtn.addEventListener('click', () => {
-        const title = ui.titleInput.value.trim() || '無題のプリセット';
-        const cards = parseInput();
-        if (cards.length > 0) handleExport({title, cards}); else alert('エクスポートするカードデータがありません。');
-    });
-    ui.exportResultsBtn.addEventListener('click', () => handleExport({title: state.title, cards: state.cards}));
-    ui.restartBtn.addEventListener('click', startQuiz);
-    ui.newSetBtn.addEventListener('click', () => {
-        ui.titleInput.value = ''; ui.cardsInput.value = ''; initState(); navigateTo('setup');
+    function updateCardCountPreview() { ui.cardCountPreview.textContent = `(${parseInput().length} カード)`; }
+    
+    const icons = {
+        light: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`,
+        dark: `<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`,
+        soundOn: `<svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`,
+        soundOff: `<svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`
+    };
+    Object.values(icons).forEach(svg => {
+        const temp = document.createElement('div'); temp.innerHTML = svg;
+        const svgEl = temp.querySelector('svg');
+        svgEl.setAttribute('fill', 'none'); svgEl.setAttribute('stroke', 'currentColor');
+        svgEl.setAttribute('stroke-width', '2'); svgEl.setAttribute('stroke-linecap', 'round'); svgEl.setAttribute('stroke-linejoin', 'round');
     });
 
+    function applyTheme(theme) {
+        if(theme === 'light') { document.documentElement.setAttribute('data-theme', 'light'); ui.themeToggle.innerHTML = icons.dark; }
+        else { document.documentElement.removeAttribute('data-theme'); ui.themeToggle.innerHTML = icons.light; }
+        localStorage.setItem('theme', theme);
+    }
+
+    function toggleSound() {
+        playSound('click');
+        state.soundEnabled = !state.soundEnabled;
+        localStorage.setItem('soundEnabled', state.soundEnabled);
+        ui.soundToggle.innerHTML = state.soundEnabled ? icons.soundOn : icons.soundOff;
+    }
+
+    function updateClock() {
+        const now = new Date();
+        const days = ['日', '月', '火', '水', '木', '金', '土'];
+        const date = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 (${days[now.getDay()]})`;
+        const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+        ui.clock.textContent = `${date} ${time}`;
+    }
+
+    ['input', 'change'].forEach(e => {
+        ui.cardsInput.addEventListener(e, updateCardCountPreview);
+        ui.cardSeparatorInput.addEventListener(e, updateCardCountPreview);
+        ui.termSeparatorInput.addEventListener(e, updateCardCountPreview);
+    });
+    ui.timeLimitCheckbox.addEventListener('change', (e) => [ui.timeLimitMinInput, ui.timeLimitSecInput].forEach(input => input.disabled = !e.target.checked));
+    ui.themeToggle.addEventListener('click', () => { playSound('click'); applyTheme(document.documentElement.hasAttribute('data-theme') ? 'dark' : 'light'); });
+    ui.soundToggle.addEventListener('click', toggleSound);
+    ui.startBtn.addEventListener('click', startQuiz);
+    ui.stopBtn.addEventListener('click', () => { if (confirm('学習を中止しますか？進捗は保存されません。')) { playSound('click'); navigateTo('setup'); } });
+    ui.importFileBtn.addEventListener('change', handleImport);
+    ui.exportSetupBtn.addEventListener('click', () => {
+        const cards = parseInput();
+        if (cards.length > 0) handleExport({title: ui.titleInput.value.trim(), cards}); else alert('エクスポートするカードデータがありません。');
+    });
+    ui.exportResultsBtn.addEventListener('click', () => handleExport({title: state.title, cards: state.cards.map(c => ({term: c.originalTerm, definition: c.originalDefinition}))}));
+    ui.restartBtn.addEventListener('click', startQuiz);
+    ui.newSetBtn.addEventListener('click', () => { playSound('click'); navigateTo('setup'); });
+    
     initState();
+    applyTheme(localStorage.getItem('theme') || 'dark');
+    ui.soundToggle.innerHTML = state.soundEnabled ? icons.soundOn : icons.soundOff;
+    updateClock(); state.clockId = setInterval(updateClock, 1000);
 });
 </script>
 </body>
