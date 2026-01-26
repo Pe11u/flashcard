@@ -150,15 +150,17 @@
         .settings-section .options-grid .input-group { margin-bottom: 0; }
         .checkbox-wrapper { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; }
         .checkbox-group { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
-        .checkbox-group input { display: none; }
+        .checkbox-group input[type="checkbox"] { display: none; }
         .checkbox-group .checkmark {
             height: 20px; width: 20px; background-color: var(--primary-color); border: 2px solid var(--border-color);
             border-radius: 4px; transition: all var(--transition-fast); display: inline-flex; justify-content: center; align-items: center; flex-shrink: 0;
         }
         .checkbox-group:hover .checkmark { border-color: var(--accent-color); }
-        .checkbox-group input:checked + .checkmark { background-color: var(--accent-color); border-color: var(--accent-color); }
+        .checkbox-group input[type="checkbox"]:checked + .checkmark { background-color: var(--accent-color); border-color: var(--accent-color); }
         .checkbox-group .checkmark svg { width: 16px; height: 16px; display: none; fill: white; }
-        .checkbox-group input:checked + .checkmark svg { display: block; }
+        .checkbox-group input[type="checkbox"]:checked + .checkmark svg { display: block; }
+        .radio-group { display: flex; gap: 20px; margin-top: 10px;}
+        .radio-group label { cursor: pointer; display: flex; align-items: center; gap: 8px;}
         .screen-footer {
             padding: 20px 40px; background-color: color-mix(in srgb, var(--secondary-color) 70%, transparent);
             border-top: 1px solid var(--border-color); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
@@ -257,7 +259,7 @@
         .formatted-card input { flex-grow: 1; }
         .delete-card-btn { background: none; border: none; color: var(--incorrect-color); cursor: pointer; font-size: 1.5rem; line-height: 1; padding: 0 5px; }
         .editor-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
-        .editor-actions .btn-secondary { padding: 8px 16px; font-size: 0.9rem; }
+        .editor-actions .btn-secondary { padding: 8px 16px; font-size: 0.9rem; line-height: 1.5; }
         .hidden { display: none !important; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
         @keyframes shake {
@@ -319,7 +321,14 @@
                     <h3 data-lang-key="learning_settings">学習設定</h3>
                     <div class="options-grid">
                          <div class="input-group"><label for="repetitions-input" data-lang-key="repetitions">各問題の出題回数</label><input type="number" id="repetitions-input" value="1" min="1" max="10"></div>
+                         <div class="input-group"><label for="max-retries-input" data-lang-key="max_retries">最大再挑戦回数</label><input type="number" id="max-retries-input" value="2" min="0" max="10"></div>
                     </div>
+                     <h3 style="margin-top: 20px;" data-lang-key="quiz_mode">クイズ形式</h3>
+                     <div class="radio-group">
+                        <label><input type="radio" name="quiz-mode" value="both" checked> <span data-lang-key="mode_both">両方</span></label>
+                        <label><input type="radio" name="quiz-mode" value="mcq"> <span data-lang-key="mode_mcq">四択クイズ</span></label>
+                        <label><input type="radio" name="quiz-mode" value="typing"> <span data-lang-key="mode_typing">タイピング</span></label>
+                     </div>
                     <div class="checkbox-wrapper">
                         <label class="checkbox-group" for="reverse-cards-checkbox">
                             <input type="checkbox" id="reverse-cards-checkbox">
@@ -427,124 +436,14 @@
 
 <script>
 const translations = {
-    "ja": {
-        "app_title": "Proshcard", "app_subtitle": "新しい学習プリセットを作成するか、既存のファイルをインポートします。", "preset_title": "プリセットのタイトル", "preset_title_placeholder": "例：英単語 Chapter 1",
-        "card_data": "カードデータ", "card_count": "({count} カード)", "card_data_placeholder": "ここに単語と意味のリストを入力します。\n例:\napple,リンゴ\nbanana,バナナ\n...", "term_separator": "単語と意味の区切り文字",
-        "card_separator": "カード間の区切り文字 (改行は \\n)", "learning_settings": "学習設定", "repetitions": "各問題の出題回数", "reverse_cards": "単語と意味を反転する",
-        "case_sensitive": "タイピングで大文字/小文字を区別", "time_limit": "時間制限", "enable_time_limit": "全体時間制限を有効にする", "minutes": "分", "seconds": "秒",
-        "import": "インポート", "export": "エクスポート", "start_learning": "学習を始める", "stop_quiz": "中止する", "results_title": "学習結果", "overall_accuracy": "全体正答率",
-        "most_mistakes": "最も間違えた単語", "restart_quiz": "もう一度学習する", "export_preset": "このプリセットをエクスポート", "back_to_start": "スタート画面に戻る",
-        "select_language": "言語を選択", "close": "閉じる", "alert_min_cards": "クイズには最低4つのカードが必要です。", "alert_invalid_input": "不正な操作です。", "alert_no_export_data": "エクスポートするカードデータがありません。",
-        "alert_import_failed": "ファイルの読み込みに失敗しました。", "confirm_stop_quiz": "学習を中止しますか？進捗は保存されません。", "quiz_phase_mcq": "フェーズ 1/2 : 四択クイズ",
-        "quiz_phase_text": "フェーズ 2/2 : タイピング", "feedback_correct": "正解！", "feedback_incorrect": "不正解... 正解は: {answer}", "time_up_message": "時間切れ...",
-        "time_up_remaining": "{count}問残っていました", "clear_message": "クリア！", "time_remaining": "{time} 残り", "clear_time_message": "クリアタイム", "mistake_count": "{count} 回",
-        "unnamed_preset": "無題のプリセット", "time_format": "{minutes}分 {seconds}秒", "answer_placeholder": "答えを入力してEnter", "tooltips": { "language": "言語を変更", "sound": "サウンドを切り替え", "theme": "テーマを切り替え" },
-        "skip": "スキップ", "enable_per_question_time_limit": "各問の時間制限を有効にする", "seconds_per_question": "1問あたりの秒数", "overall_time": "全体時間", "question_time": "残り時間",
-        "weekdays": ["日", "月", "火", "水", "木", "金", "土"], "switch_to_raw": "Rawに切り替え", "switch_to_formatted": "フォーマット化に戻す", "add_card": "カードを追加", "term_placeholder": "単語", "definition_placeholder": "意味"
-    },
-    "en": {
-        "app_title": "Proshcard", "app_subtitle": "Create a new learning preset or import an existing file.", "preset_title": "Preset Title", "preset_title_placeholder": "e.g., English Vocabulary Chapter 1",
-        "card_data": "Card Data", "card_count": "({count} cards)", "card_data_placeholder": "Enter a list of terms and definitions here.\ne.g.,\napple,リンゴ\nbanana,バナナ\n...", "term_separator": "Term/Definition Separator",
-        "card_separator": "Card Separator (Newline is \\n)", "learning_settings": "Study Settings", "repetitions": "Repetitions per card", "reverse_cards": "Reverse term and definition",
-        "case_sensitive": "Case-sensitive typing", "time_limit": "Time Limit", "enable_time_limit": "Enable overall time limit", "minutes": "Min", "seconds": "Sec", "import": "Import",
-        "export": "Export", "start_learning": "Start Learning", "stop_quiz": "Stop", "results_title": "Study Results", "overall_accuracy": "Overall Accuracy", "most_mistakes": "Most Mistaken Words",
-        "restart_quiz": "Restart Quiz", "export_preset": "Export This Preset", "back_to_start": "Back to Start Screen", "select_language": "Select Language", "close": "Close",
-        "alert_min_cards": "At least 4 cards are required for a quiz.", "alert_invalid_input": "Invalid operation.", "alert_no_export_data": "There is no card data to export.", "alert_import_failed": "Failed to read the file.",
-        "confirm_stop_quiz": "Stop the quiz? Progress will not be saved.", "quiz_phase_mcq": "Phase 1/2: Multiple Choice", "quiz_phase_text": "Phase 2/2: Typing", "feedback_correct": "Correct!",
-        "feedback_incorrect": "Incorrect... The correct answer is: {answer}", "time_up_message": "Time's up...", "time_up_remaining": "{count} questions remaining", "clear_message": "Cleared!",
-        "time_remaining": "{time} remaining", "clear_time_message": "Clear Time", "mistake_count": "{count} times", "unnamed_preset": "Untitled Preset", "time_format": "{minutes}m {seconds}s",
-        "answer_placeholder": "Type the answer and press Enter", "tooltips": { "language": "Change Language", "sound": "Toggle Sound", "theme": "Toggle Theme" }, "skip": "Skip",
-        "enable_per_question_time_limit": "Enable per-question time limit", "seconds_per_question": "Seconds per question", "overall_time": "Total Time", "question_time": "Time Left",
-        "weekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], "switch_to_raw": "Switch to Raw", "switch_to_formatted": "Back to Formatted", "add_card": "Add Card", "term_placeholder": "Term", "definition_placeholder": "Definition"
-    },
-    "ko": {
-        "app_title": "Proshcard", "app_subtitle": "새 학습 세트를 만들거나 기존 파일을 가져옵니다。", "preset_title": "세트 제목", "preset_title_placeholder": "예: 영단어 Chapter 1", "card_data": "카드 데이터", "card_count": "({count}개 카드)",
-        "card_data_placeholder": "여기에 단어와 뜻 목록을 입력하세요.\n예:\napple,사과\nbanana,바나나\n...", "term_separator": "단어와 뜻 구분자", "card_separator": "카드 간 구분자 (줄바꿈은 \\n)",
-        "learning_settings": "학습 설정", "repetitions": "카드당 반복 횟수", "reverse_cards": "단어와 뜻 뒤집기", "case_sensitive": "타이핑 시 대소문자 구분", "time_limit": "시간 제한",
-        "enable_time_limit": "전체 시간 제한 활성화", "minutes": "분", "seconds": "초", "import": "가져오기", "export": "내보내기", "start_learning": "학습 시작", "stop_quiz": "중지",
-        "results_title": "학습 결과", "overall_accuracy": "전체 정답률", "most_mistakes": "가장 많이 틀린 단어", "restart_quiz": "다시 학습하기", "export_preset": "이 세트 내보내기",
-        "back_to_start": "시작 화면으로 돌아가기", "select_language": "언어 선택", "close": "닫기", "alert_min_cards": "퀴즈를 시작하려면 최소 4개의 카드가 필요합니다.",
-        "alert_invalid_input": "잘못된 조작입니다.", "alert_no_export_data": "내보낼 카드 데이터가 없습니다.", "alert_import_failed": "파일을 읽는 데 실패했습니다.",
-        "confirm_stop_quiz": "학습을 중지하시겠습니까? 진행 상황은 저장되지 않습니다.", "quiz_phase_mcq": "단계 1/2: 객관식", "quiz_phase_text": "단계 2/2: 타이핑",
-        "feedback_correct": "정답!", "feedback_incorrect": "오답... 정답: {answer}", "time_up_message": "시간 초과...", "time_up_remaining": "{count} 문제 남음", "clear_message": "클리어!",
-        "time_remaining": "{time} 남음", "clear_time_message": "클리어 시간", "mistake_count": "{count}회", "unnamed_preset": "제목 없는 세트", "time_format": "{minutes}분 {seconds}초",
-        "answer_placeholder": "답을 입력하고 Enter를 누르세요", "tooltips": { "language": "언어 변경", "sound": "소리 켜기/끄기", "theme": "테마 변경" }, "skip": "건너뛰기",
-        "enable_per_question_time_limit": "문제별 시간 제한 활성화", "seconds_per_question": "문제당 초", "overall_time": "총 시간", "question_time": "남은 시간",
-        "weekdays": ["일", "월", "화", "수", "목", "금", "토"], "switch_to_raw": "Raw로 전환", "switch_to_formatted": "포맷으로 돌아가기", "add_card": "카드 추가", "term_placeholder": "단어", "definition_placeholder": "뜻"
-    },
-    "zh-CN": {
-        "app_title": "Proshcard", "app_subtitle": "创建新的学习预设或导入现有文件。", "preset_title": "预设标题", "preset_title_placeholder": "例如：英语单词 第1章", "card_data": "卡片数据", "card_count": "({count} 张卡片)",
-        "card_data_placeholder": "在此处输入术语和定义的列表。\n例如:\napple,苹果\nbanana,香蕉\n...", "term_separator": "词语和释义分隔符", "card_separator": "卡片间分隔符 (换行为 \\n)",
-        "learning_settings": "学习设置", "repetitions": "每张卡片的重复次数", "reverse_cards": "翻转词语和释义", "case_sensitive": "键入时区分大小写", "time_limit": "时间限制",
-        "enable_time_limit": "启用总时间限制", "minutes": "分", "seconds": "秒", "import": "导入", "export": "导出", "start_learning": "开始学习", "stop_quiz": "停止",
-        "results_title": "学习结果", "overall_accuracy": "总正确率", "most_mistakes": "错误最多的单词", "restart_quiz": "再次学习", "export_preset": "导出此预设",
-        "back_to_start": "返回开始屏幕", "select_language": "选择语言", "close": "关闭", "alert_min_cards": "测验至少需要4张卡片。", "alert_invalid_input": "无效操作。",
-        "alert_no_export_data": "没有可导出的卡片数据。", "alert_import_failed": "文件读取失败。", "confirm_stop_quiz": "要停止学习吗？进度将不会被保存。",
-        "quiz_phase_mcq": "阶段 1/2: 选择题", "quiz_phase_text": "阶段 2/2: 打字", "feedback_correct": "正确！", "feedback_incorrect": "错误... 正确答案是: {answer}",
-        "time_up_message": "时间到...", "time_up_remaining": "剩余 {count} 个问题", "clear_message": "已通关！", "time_remaining": "剩余 {time}", "clear_time_message": "通关时间",
-        "mistake_count": "{count} 次", "unnamed_preset": "无标题预设", "time_format": "{minutes}分 {seconds}秒", "answer_placeholder": "输入答案并按 Enter",
-        "tooltips": { "language": "更改语言", "sound": "切换声音", "theme": "切换主题" }, "skip": "跳过", "enable_per_question_time_limit": "启用单题时间限制",
-        "seconds_per_question": "每题秒数", "overall_time": "总时间", "question_time": "剩余时间", "weekdays": ["日", "一", "二", "三", "四", "五", "六"], "switch_to_raw": "切换到Raw", "switch_to_formatted": "回到格式化", "add_card": "添加卡片", "term_placeholder": "词", "definition_placeholder": "释义"
-    },
-    "zh-TW": {
-        "app_title": "Proshcard", "app_subtitle": "建立新的學習預設或匯入現有檔案。", "preset_title": "預設標題", "preset_title_placeholder": "例如：英文單字 第1章", "card_data": "卡片資料", "card_count": "({count} 張卡片)",
-        "card_data_placeholder": "在此處輸入術語和定義的清單。\n例如:\napple,蘋果\nbanana,香蕉\n...", "term_separator": "詞語和釋義分隔符", "card_separator": "卡片間分隔符 (換行爲 \\n)",
-        "learning_settings": "學習設定", "repetitions": "每張卡片的重複次數", "reverse_cards": "翻轉詞語和釋義", "case_sensitive": "輸入時區分大小寫", "time_limit": "時間限制",
-        "enable_time_limit": "啟用總時間限制", "minutes": "分", "seconds": "秒", "import": "匯入", "export": "匯出", "start_learning": "開始學習", "stop_quiz": "停止",
-        "results_title": "學習結果", "overall_accuracy": "總正確率", "most_mistakes": "錯誤最多的單字", "restart_quiz": "再次學習", "export_preset": "匯出此預設",
-        "back_to_start": "返回開始畫面", "select_language": "選擇語言", "close": "關閉", "alert_min_cards": "測驗至少需要4張卡片。", "alert_invalid_input": "無效操作。",
-        "alert_no_export_data": "沒有可匯出的卡片資料。", "alert_import_failed": "檔案讀取失敗。", "confirm_stop_quiz": "要停止學習嗎？進度將不會被儲存。",
-        "quiz_phase_mcq": "階段 1/2: 選擇題", "quiz_phase_text": "階段 2/2: 打字", "feedback_correct": "正確！", "feedback_incorrect": "錯誤... 正確答案是: {answer}",
-        "time_up_message": "時間到...", "time_up_remaining": "剩餘 {count} 個問題", "clear_message": "已通關！", "time_remaining": "剩餘 {time}", "clear_time_message": "通關時間",
-        "mistake_count": "{count} 次", "unnamed_preset": "無標題預設", "time_format": "{minutes}分 {seconds}秒", "answer_placeholder": "輸入答案並按 Enter",
-        "tooltips": { "language": "更改語言", "sound": "切換聲音", "theme": "切換主題" }, "skip": "跳過", "enable_per_question_time_limit": "啟用單題時間限制",
-        "seconds_per_question": "每題秒數", "overall_time": "總時間", "question_time": "剩餘時間", "weekdays": ["日", "一", "二", "三", "四", "五", "六"], "switch_to_raw": "切換到Raw", "switch_to_formatted": "回到格式化", "add_card": "新增卡片", "term_placeholder": "詞", "definition_placeholder": "釋義"
-    },
-    "es": {
-        "app_title": "Proshcard", "app_subtitle": "Crea un nuevo set de estudio o importa uno existente.", "preset_title": "Título del Set", "preset_title_placeholder": "Ej: Vocabulario de Inglés Cap. 1",
-        "card_data": "Datos de Tarjetas", "card_count": "({count} tarjetas)", "card_data_placeholder": "Introduce una lista de términos y definiciones.\nEj:\napple,manzana\nbanana,plátano\n...",
-        "term_separator": "Separador de Término/Definición", "card_separator": "Separador de Tarjetas (Salto de línea es \\n)", "learning_settings": "Ajustes de Estudio", "repetitions": "Repeticiones por tarjeta",
-        "reverse_cards": "Invertir término y definición", "case_sensitive": "Distinguir mayúsculas/minúsculas", "time_limit": "Límite de Tiempo", "enable_time_limit": "Habilitar límite de tiempo total",
-        "minutes": "Min", "seconds": "Seg", "import": "Importar", "export": "Exportar", "start_learning": "Empezar a Estudiar", "stop_quiz": "Parar", "results_title": "Resultados del Estudio",
-        "overall_accuracy": "Precisión General", "most_mistakes": "Palabras con más errores", "restart_quiz": "Reiniciar", "export_preset": "Exportar este Set", "back_to_start": "Volver al Inicio",
-        "select_language": "Seleccionar Idioma", "close": "Cerrar", "alert_min_cards": "Se necesitan al menos 4 tarjetas para el cuestionario.", "alert_invalid_input": "Operación no válida.",
-        "alert_no_export_data": "No hay datos de tarjetas para exportar.", "alert_import_failed": "Error al leer el archivo.", "confirm_stop_quiz": "¿Parar el estudio? El progreso no se guardará.",
-        "quiz_phase_mcq": "Fase 1/2: Opción Múltiple", "quiz_phase_text": "Fase 2/2: Escribir", "feedback_correct": "¡Correcto!", "feedback_incorrect": "Incorrecto... La respuesta correcta es: {answer}",
-        "time_up_message": "¡Se acabó el tiempo!", "time_up_remaining": "{count} preguntas restantes", "clear_message": "¡Completado!", "time_remaining": "{time} restante", "clear_time_message": "Tiempo Total",
-        "mistake_count": "{count} veces", "unnamed_preset": "Set sin título", "time_format": "{minutes}m {seconds}s", "answer_placeholder": "Escribe la respuesta y presiona Enter",
-        "tooltips": { "language": "Cambiar Idioma", "sound": "Activar/Desactivar Sonido", "theme": "Cambiar Tema" }, "skip": "Saltar", "enable_per_question_time_limit": "Habilitar límite por pregunta",
-        "seconds_per_question": "Segundos por pregunta", "overall_time": "Tiempo Total", "question_time": "Tiempo Rest.", "weekdays": ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"], "switch_to_raw": "Cambiar a Raw", "switch_to_formatted": "Volver a Formato", "add_card": "Añadir Tarjeta", "term_placeholder": "Término", "definition_placeholder": "Definición"
-    },
-    "de": {
-        "app_title": "Proshcard", "app_subtitle": "Erstelle ein neues Lernset oder importiere eine vorhandene Datei.", "preset_title": "Titel des Sets", "preset_title_placeholder": "z.B. Englisch Vokabeln Kapitel 1",
-        "card_data": "Kartendaten", "card_count": "({count} Karten)", "card_data_placeholder": "Gib hier eine Liste von Begriffen und Definitionen ein.\nz.B.:\napple,Apfel\nbanana,Banane\n...",
-        "term_separator": "Trennzeichen Begriff/Definition", "card_separator": "Trennzeichen zwischen Karten (Zeilenumbruch ist \\n)", "learning_settings": "Lerneinstellungen", "repetitions": "Wiederholungen pro Karte",
-        "reverse_cards": "Begriff und Definition umkehren", "case_sensitive": "Groß-/Kleinschreibung beachten", "time_limit": "Zeitlimit", "enable_time_limit": "Gesamtzeitlimit aktivieren",
-        "minutes": "Min", "seconds": "Sek", "import": "Importieren", "export": "Exportieren", "start_learning": "Lernen starten", "stop_quiz": "Stopp", "results_title": "Lernergebnisse",
-        "overall_accuracy": "Gesamtgenauigkeit", "most_mistakes": "Häufigste Fehler", "restart_quiz": "Neustart", "export_preset": "Dieses Set exportieren", "back_to_start": "Zurück zum Startbildschirm",
-        "select_language": "Sprache wählen", "close": "Schließen", "alert_min_cards": "Für ein Quiz sind mindestens 4 Karten erforderlich.", "alert_invalid_input": "Ungültige Operation.",
-        "alert_no_export_data": "Es sind keine Kartendaten zum Exportieren vorhanden.", "alert_import_failed": "Fehler beim Lesen der Datei.", "confirm_stop_quiz": "Das Lernen beenden? Der Fortschritt wird nicht gespeichert.",
-        "quiz_phase_mcq": "Phase 1/2: Multiple-Choice", "quiz_phase_text": "Phase 2/2: Tippen", "feedback_correct": "Richtig!", "feedback_incorrect": "Falsch... Die richtige Antwort ist: {answer}",
-        "time_up_message": "Die Zeit ist um...", "time_up_remaining": "{count} Fragen übrig", "clear_message": "Geschafft!", "time_remaining": "{time} übrig", "clear_time_message": "Benötigte Zeit",
-        "mistake_count": "{count} Mal", "unnamed_preset": "Unbenanntes Set", "time_format": "{minutes}m {seconds}s", "answer_placeholder": "Antwort eingeben und Enter drücken",
-        "tooltips": { "language": "Sprache ändern", "sound": "Ton umschalten", "theme": "Thema wechseln" }, "skip": "Überspringen", "enable_per_question_time_limit": "Zeitlimit pro Frage aktivieren",
-        "seconds_per_question": "Sekunden pro Frage", "overall_time": "Gesamtzeit", "question_time": "Verbleibend", "weekdays": ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"], "switch_to_raw": "Zu Raw wechseln", "switch_to_formatted": "Zurück zum Format", "add_card": "Karte hinzufügen", "term_placeholder": "Begriff", "definition_placeholder": "Definition"
-    },
-    "fr": {
-        "app_title": "Proshcard", "app_subtitle": "Créez un nouveau set d'apprentissage ou importez un fichier existant.", "preset_title": "Titre du set", "preset_title_placeholder": "Ex: Vocabulaire Anglais Chapitre 1",
-        "card_data": "Données des cartes", "card_count": "({count} cartes)", "card_data_placeholder": "Entrez une liste de termes et de définitions ici.\nEx:\napple,pomme\nbanana,banane\n...",
-        "term_separator": "Séparateur terme/définition", "card_separator": "Séparateur de carte (saut de ligne est \\n)", "learning_settings": "Paramètres d'étude", "repetitions": "Répétitions par carte",
-        "reverse_cards": "Inverser terme et définition", "case_sensitive": "Sensible à la casse", "time_limit": "Limite de temps", "enable_time_limit": "Activer la limite de temps globale",
-        "minutes": "Min", "seconds": "Sec", "import": "Importer", "export": "Exporter", "start_learning": "Commencer", "stop_quiz": "Arrêter", "results_title": "Résultats",
-        "overall_accuracy": "Précision globale", "most_mistakes": "Mots les plus erronés", "restart_quiz": "Recommencer", "export_preset": "Exporter ce set", "back_to_start": "Retour à l'accueil",
-        "select_language": "Sélectionner la langue", "close": "Fermer", "alert_min_cards": "Au moins 4 cartes sont nécessaires pour un quiz.", "alert_invalid_input": "Opération invalide.",
-        "alert_no_export_data": "Il n'y a aucune donnée de carte à exporter.", "alert_import_failed": "Échec de la lecture du fichier.", "confirm_stop_quiz": "Arrêter l'apprentissage ? La progression ne sera pas sauvegardée.",
-        "quiz_phase_mcq": "Phase 1/2 : QCM", "quiz_phase_text": "Phase 2/2 : Saisie", "feedback_correct": "Correct !", "feedback_incorrect": "Incorrect... La bonne réponse est : {answer}",
-        "time_up_message": "Temps écoulé...", "time_up_remaining": "{count} questions restantes", "clear_message": "Terminé !", "time_remaining": "{time} restant", "clear_time_message": "Temps final",
-        "mistake_count": "{count} fois", "unnamed_preset": "Set sans titre", "time_format": "{minutes}m {seconds}s", "answer_placeholder": "Tapez la réponse et appuyez sur Entrée",
-        "tooltips": { "language": "Changer de langue", "sound": "Activer/Désactiver le son", "theme": "Changer de thème" }, "skip": "Passer", "enable_per_question_time_limit": "Activer la limite par question",
-        "seconds_per_question": "Secondes par question", "overall_time": "Temps total", "question_time": "Temps rest.", "weekdays": ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"], "switch_to_raw": "Passer à Raw", "switch_to_formatted": "Retour au Format", "add_card": "Ajouter Carte", "term_placeholder": "Terme", "definition_placeholder": "Définition"
-    }
+    "ja": { "app_title": "Proshcard", "app_subtitle": "新しい学習プリセットを作成するか、既存のファイルをインポートします。", "preset_title": "プリセットのタイトル", "preset_title_placeholder": "例：英単語 Chapter 1", "card_data": "カードデータ", "card_count": "({count} カード)", "card_data_placeholder": "ここに単語と意味のリストを入力します。\n例:\napple,リンゴ\nbanana,バナナ\n...", "term_separator": "単語と意味の区切り文字", "card_separator": "カード間の区切り文字 (改行は \\n)", "learning_settings": "学習設定", "repetitions": "各問題の出題回数", "reverse_cards": "単語と意味を反転する", "case_sensitive": "タイピングで大文字/小文字を区別", "time_limit": "時間制限", "enable_time_limit": "全体時間制限を有効にする", "minutes": "分", "seconds": "秒", "import": "インポート", "export": "エクスポート", "start_learning": "学習を始める", "stop_quiz": "中止する", "results_title": "学習結果", "overall_accuracy": "全体正答率", "most_mistakes": "最も間違えた単語", "restart_quiz": "もう一度学習する", "export_preset": "このプリセットをエクスポート", "back_to_start": "スタート画面に戻る", "select_language": "言語を選択", "close": "閉じる", "alert_min_cards": "クイズには最低4つのカードが必要です。", "alert_invalid_input": "不正な操作です。", "alert_no_export_data": "エクスポートするカードデータがありません。", "alert_import_failed": "ファイルの読み込みに失敗しました。", "confirm_stop_quiz": "学習を中止しますか？進捗は保存されません。", "quiz_phase_mcq": "フェーズ 1/2 : 四択クイズ", "quiz_phase_text": "フェーズ 2/2 : タイピング", "feedback_correct": "正解！", "feedback_incorrect": "不正解... 正解は: {answer}", "time_up_message": "時間切れ...", "time_up_remaining": "{count}問残っていました", "clear_message": "クリア！", "time_remaining": "{time} 残り", "clear_time_message": "クリアタイム", "mistake_count": "{count} 回", "unnamed_preset": "無題のプリセット", "time_format": "{minutes}分 {seconds}秒", "answer_placeholder": "答えを入力してEnter", "tooltips": { "language": "言語を変更", "sound": "サウンドを切り替え", "theme": "テーマを切り替え" }, "skip": "スキップ", "enable_per_question_time_limit": "各問の時間制限を有効にする", "seconds_per_question": "1問あたりの秒数", "overall_time": "全体時間", "question_time": "残り時間", "weekdays": ["日", "月", "火", "水", "木", "金", "土"], "switch_to_raw": "Rawに切り替え", "switch_to_formatted": "フォーマット化に戻す", "add_card": "カードを追加", "term_placeholder": "単語", "definition_placeholder": "意味", "max_retries": "最大再挑戦回数", "quiz_mode": "クイズ形式", "mode_mcq": "四択クイズ", "mode_typing": "タイピング", "mode_both": "両方", "quiz_phase_mcq_only": "フェーズ 1/1 : 四択クイズ", "quiz_phase_typing_only": "フェーズ 1/1 : タイピング" },
+    "en": { "app_title": "Proshcard", "app_subtitle": "Create a new learning preset or import an existing file.", "preset_title": "Preset Title", "preset_title_placeholder": "e.g., English Vocabulary Chapter 1", "card_data": "Card Data", "card_count": "({count} cards)", "card_data_placeholder": "Enter a list of terms and definitions here.\ne.g.,\napple,リンゴ\nbanana,バナナ\n...", "term_separator": "Term/Definition Separator", "card_separator": "Card Separator (Newline is \\n)", "learning_settings": "Study Settings", "repetitions": "Repetitions per card", "reverse_cards": "Reverse term and definition", "case_sensitive": "Case-sensitive typing", "time_limit": "Time Limit", "enable_time_limit": "Enable overall time limit", "minutes": "Min", "seconds": "Sec", "import": "Import", "export": "Export", "start_learning": "Start Learning", "stop_quiz": "Stop", "results_title": "Study Results", "overall_accuracy": "Overall Accuracy", "most_mistakes": "Most Mistaken Words", "restart_quiz": "Restart Quiz", "export_preset": "Export This Preset", "back_to_start": "Back to Start Screen", "select_language": "Select Language", "close": "Close", "alert_min_cards": "At least 4 cards are required for a quiz.", "alert_invalid_input": "Invalid operation.", "alert_no_export_data": "There is no card data to export.", "alert_import_failed": "Failed to read the file.", "confirm_stop_quiz": "Stop the quiz? Progress will not be saved.", "quiz_phase_mcq": "Phase 1/2: Multiple Choice", "quiz_phase_text": "Phase 2/2: Typing", "feedback_correct": "Correct!", "feedback_incorrect": "Incorrect... The correct answer is: {answer}", "time_up_message": "Time's up...", "time_up_remaining": "{count} questions remaining", "clear_message": "Cleared!", "time_remaining": "{time} remaining", "clear_time_message": "Clear Time", "mistake_count": "{count} times", "unnamed_preset": "Untitled Preset", "time_format": "{minutes}m {seconds}s", "answer_placeholder": "Type the answer and press Enter", "tooltips": { "language": "Change Language", "sound": "Toggle Sound", "theme": "Toggle Theme" }, "skip": "Skip", "enable_per_question_time_limit": "Enable per-question time limit", "seconds_per_question": "Seconds per question", "overall_time": "Total Time", "question_time": "Time Left", "weekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], "switch_to_raw": "Switch to Raw", "switch_to_formatted": "Back to Formatted", "add_card": "Add Card", "term_placeholder": "Term", "definition_placeholder": "Definition", "max_retries": "Max Retries", "quiz_mode": "Quiz Mode", "mode_mcq": "Multiple Choice", "mode_typing": "Typing", "mode_both": "Both", "quiz_phase_mcq_only": "Phase 1/1: Multiple Choice", "quiz_phase_typing_only": "Phase 1/1: Typing" },
+    "ko": { "app_title": "Proshcard", "app_subtitle": "새 학습 세트를 만들거나 기존 파일을 가져옵니다。", "preset_title": "세트 제목", "preset_title_placeholder": "예: 영단어 Chapter 1", "card_data": "카드 데이터", "card_count": "({count}개 카드)", "card_data_placeholder": "여기에 단어와 뜻 목록을 입력하세요.\n예:\napple,사과\nbanana,바나나\n...", "term_separator": "단어와 뜻 구분자", "card_separator": "카드 간 구분자 (줄바꿈은 \\n)", "learning_settings": "학습 설정", "repetitions": "카드당 반복 횟수", "reverse_cards": "단어와 뜻 뒤집기", "case_sensitive": "타이핑 시 대소문자 구분", "time_limit": "시간 제한", "enable_time_limit": "전체 시간 제한 활성화", "minutes": "분", "seconds": "초", "import": "가져오기", "export": "내보내기", "start_learning": "학습 시작", "stop_quiz": "중지", "results_title": "학습 결과", "overall_accuracy": "전체 정답률", "most_mistakes": "가장 많이 틀린 단어", "restart_quiz": "다시 학습하기", "export_preset": "이 세트 내보내기", "back_to_start": "시작 화면으로 돌아가기", "select_language": "언어 선택", "close": "닫기", "alert_min_cards": "퀴즈를 시작하려면 최소 4개의 카드가 필요합니다.", "alert_invalid_input": "잘못된 조작입니다.", "alert_no_export_data": "내보낼 카드 데이터가 없습니다.", "alert_import_failed": "파일을 읽는 데 실패했습니다.", "confirm_stop_quiz": "학습을 중지하시겠습니까? 진행 상황은 저장되지 않습니다.", "quiz_phase_mcq": "단계 1/2: 객관식", "quiz_phase_text": "단계 2/2: 타이핑", "feedback_correct": "정답!", "feedback_incorrect": "오답... 정답: {answer}", "time_up_message": "시간 초과...", "time_up_remaining": "{count} 문제 남음", "clear_message": "클리어!", "time_remaining": "{time} 남음", "clear_time_message": "클리어 시간", "mistake_count": "{count}회", "unnamed_preset": "제목 없는 세트", "time_format": "{minutes}분 {seconds}초", "answer_placeholder": "답을 입력하고 Enter를 누르세요", "tooltips": { "language": "언어 변경", "sound": "소리 켜기/끄기", "theme": "테마 변경" }, "skip": "건너뛰기", "enable_per_question_time_limit": "문제별 시간 제한 활성화", "seconds_per_question": "문제당 초", "overall_time": "총 시간", "question_time": "남은 시간", "weekdays": ["일", "월", "화", "수", "목", "금", "토"], "switch_to_raw": "Raw로 전환", "switch_to_formatted": "포맷으로 돌아가기", "add_card": "카드 추가", "term_placeholder": "단어", "definition_placeholder": "뜻", "max_retries": "최대 재시도 횟수", "quiz_mode": "퀴즈 형식", "mode_mcq": "객관식", "mode_typing": "타이핑", "mode_both": "모두", "quiz_phase_mcq_only": "단계 1/1: 객관식", "quiz_phase_typing_only": "단계 1/1: 타이핑" },
+    "zh-CN": { "app_title": "Proshcard", "app_subtitle": "创建新的学习预设或导入现有文件。", "preset_title": "预设标题", "preset_title_placeholder": "例如：英语单词 第1章", "card_data": "卡片数据", "card_count": "({count} 张卡片)", "card_data_placeholder": "在此处输入术语和定义的列表。\n例如:\napple,苹果\nbanana,香蕉\n...", "term_separator": "词语和释义分隔符", "card_separator": "卡片间分隔符 (换行为 \\n)", "learning_settings": "学习设置", "repetitions": "每张卡片的重复次数", "reverse_cards": "翻转词语和释义", "case_sensitive": "键入时区分大小写", "time_limit": "时间限制", "enable_time_limit": "启用总时间限制", "minutes": "分", "seconds": "秒", "import": "导入", "export": "导出", "start_learning": "开始学习", "stop_quiz": "停止", "results_title": "学习结果", "overall_accuracy": "总正确率", "most_mistakes": "错误最多的单词", "restart_quiz": "再次学习", "export_preset": "导出此预设", "back_to_start": "返回开始屏幕", "select_language": "选择语言", "close": "关闭", "alert_min_cards": "测验至少需要4张卡片。", "alert_invalid_input": "无效操作。", "alert_no_export_data": "没有可导出的卡片数据。", "alert_import_failed": "文件读取失败。", "confirm_stop_quiz": "要停止学习吗？进度将不会被保存。", "quiz_phase_mcq": "阶段 1/2: 选择题", "quiz_phase_text": "阶段 2/2: 打字", "feedback_correct": "正确！", "feedback_incorrect": "错误... 正确答案是: {answer}", "time_up_message": "时间到...", "time_up_remaining": "剩余 {count} 个问题", "clear_message": "已通关！", "time_remaining": "剩余 {time}", "clear_time_message": "通关时间", "mistake_count": "{count} 次", "unnamed_preset": "无标题预设", "time_format": "{minutes}分 {seconds}秒", "answer_placeholder": "输入答案并按 Enter", "tooltips": { "language": "更改语言", "sound": "切换声音", "theme": "切换主题" }, "skip": "跳过", "enable_per_question_time_limit": "启用单题时间限制", "seconds_per_question": "每题秒数", "overall_time": "总时间", "question_time": "剩余时间", "weekdays": ["日", "一", "二", "三", "四", "五", "六"], "switch_to_raw": "切换到Raw", "switch_to_formatted": "回到格式化", "add_card": "添加卡片", "term_placeholder": "词", "definition_placeholder": "释义", "max_retries": "最大重试次数", "quiz_mode": "测验模式", "mode_mcq": "选择题", "mode_typing": "打字", "mode_both": "两者都有", "quiz_phase_mcq_only": "阶段 1/1: 选择题", "quiz_phase_typing_only": "阶段 1/1: 打字" },
+    "zh-TW": { "app_title": "Proshcard", "app_subtitle": "建立新的學習預設或匯入現有檔案。", "preset_title": "預設標題", "preset_title_placeholder": "例如：英文單字 第1章", "card_data": "卡片資料", "card_count": "({count} 張卡片)", "card_data_placeholder": "在此處輸入術語和定義的清單。\n例如:\napple,蘋果\nbanana,香蕉\n...", "term_separator": "詞語和釋義分隔符", "card_separator": "卡片間分隔符 (換行爲 \\n)", "learning_settings": "學習設定", "repetitions": "每張卡片的重複次數", "reverse_cards": "翻轉詞語和釋義", "case_sensitive": "輸入時區分大小寫", "time_limit": "時間限制", "enable_time_limit": "啟用總時間限制", "minutes": "分", "seconds": "秒", "import": "匯入", "export": "匯出", "start_learning": "開始學習", "stop_quiz": "停止", "results_title": "學習結果", "overall_accuracy": "總正確率", "most_mistakes": "錯誤最多的單字", "restart_quiz": "再次學習", "export_preset": "匯出此預設", "back_to_start": "返回開始畫面", "select_language": "選擇語言", "close": "關閉", "alert_min_cards": "測驗至少需要4張卡片。", "alert_invalid_input": "無效操作。", "alert_no_export_data": "沒有可匯出的卡片資料。", "alert_import_failed": "檔案讀取失敗。", "confirm_stop_quiz": "要停止學習嗎？進度將不會被儲存。", "quiz_phase_mcq": "階段 1/2: 選擇題", "quiz_phase_text": "階段 2/2: 打字", "feedback_correct": "正確！", "feedback_incorrect": "錯誤... 正確答案是: {answer}", "time_up_message": "時間到...", "time_up_remaining": "剩餘 {count} 個問題", "clear_message": "已通關！", "time_remaining": "剩餘 {time}", "clear_time_message": "通關時間", "mistake_count": "{count} 次", "unnamed_preset": "無標題預設", "time_format": "{minutes}分 {seconds}秒", "answer_placeholder": "輸入答案並按 Enter", "tooltips": { "language": "更改語言", "sound": "切換聲音", "theme": "切換主題" }, "skip": "跳過", "enable_per_question_time_limit": "啟用單題時間限制", "seconds_per_question": "每題秒數", "overall_time": "總時間", "question_time": "剩餘時間", "weekdays": ["日", "一", "二", "三", "四", "五", "六"], "switch_to_raw": "切換到Raw", "switch_to_formatted": "回到格式化", "add_card": "新增卡片", "term_placeholder": "詞", "definition_placeholder": "釋義", "max_retries": "最大重試次數", "quiz_mode": "測驗模式", "mode_mcq": "選擇題", "mode_typing": "打字", "mode_both": "兩者都有", "quiz_phase_mcq_only": "階段 1/1: 選擇題", "quiz_phase_typing_only": "階段 1/1: 打字" },
+    "es": { "app_title": "Proshcard", "app_subtitle": "Crea un nuevo set de estudio o importa uno existente.", "preset_title": "Título del Set", "preset_title_placeholder": "Ej: Vocabulario de Inglés Cap. 1", "card_data": "Datos de Tarjetas", "card_count": "({count} tarjetas)", "card_data_placeholder": "Introduce una lista de términos y definiciones.\nEj:\napple,manzana\nbanana,plátano\n...", "term_separator": "Separador de Término/Definición", "card_separator": "Separador de Tarjetas (Salto de línea es \\n)", "learning_settings": "Ajustes de Estudio", "repetitions": "Repeticiones por tarjeta", "reverse_cards": "Invertir término y definición", "case_sensitive": "Distinguir mayúsculas/minúsculas", "time_limit": "Límite de Tiempo", "enable_time_limit": "Habilitar límite de tiempo total", "minutes": "Min", "seconds": "Seg", "import": "Importar", "export": "Exportar", "start_learning": "Empezar a Estudiar", "stop_quiz": "Parar", "results_title": "Resultados del Estudio", "overall_accuracy": "Precisión General", "most_mistakes": "Palabras con más errores", "restart_quiz": "Reiniciar", "export_preset": "Exportar este Set", "back_to_start": "Volver al Inicio", "select_language": "Seleccionar Idioma", "close": "Cerrar", "alert_min_cards": "Se necesitan al menos 4 tarjetas para el cuestionario.", "alert_invalid_input": "Operación no válida.", "alert_no_export_data": "No hay datos de tarjetas para exportar.", "alert_import_failed": "Error al leer el archivo.", "confirm_stop_quiz": "¿Parar el estudio? El progreso no se guardará.", "quiz_phase_mcq": "Fase 1/2: Opción Múltiple", "quiz_phase_text": "Fase 2/2: Escribir", "feedback_correct": "¡Correcto!", "feedback_incorrect": "Incorrecto... La respuesta correcta es: {answer}", "time_up_message": "¡Se acabó el tiempo!", "time_up_remaining": "{count} preguntas restantes", "clear_message": "¡Completado!", "time_remaining": "{time} restante", "clear_time_message": "Tiempo Total", "mistake_count": "{count} veces", "unnamed_preset": "Set sin título", "time_format": "{minutes}m {seconds}s", "answer_placeholder": "Escribe la respuesta y presiona Enter", "tooltips": { "language": "Cambiar Idioma", "sound": "Activar/Desactivar Sonido", "theme": "Cambiar Tema" }, "skip": "Saltar", "enable_per_question_time_limit": "Habilitar límite por pregunta", "seconds_per_question": "Segundos por pregunta", "overall_time": "Tiempo Total", "question_time": "Tiempo Rest.", "weekdays": ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"], "switch_to_raw": "Cambiar a Raw", "switch_to_formatted": "Volver a Formato", "add_card": "Añadir Tarjeta", "term_placeholder": "Término", "definition_placeholder": "Definición", "max_retries": "Máx. reintentos", "quiz_mode": "Modo de Test", "mode_mcq": "Opción múltiple", "mode_typing": "Escribir", "mode_both": "Ambos", "quiz_phase_mcq_only": "Fase 1/1: Opción Múltiple", "quiz_phase_typing_only": "Fase 1/1: Escribir" },
+    "de": { "app_title": "Proshcard", "app_subtitle": "Erstelle ein neues Lernset oder importiere eine vorhandene Datei.", "preset_title": "Titel des Sets", "preset_title_placeholder": "z.B. Englisch Vokabeln Kapitel 1", "card_data": "Kartendaten", "card_count": "({count} Karten)", "card_data_placeholder": "Gib hier eine Liste von Begriffen und Definitionen ein.\nz.B.:\napple,Apfel\nbanana,Banane\n...", "term_separator": "Trennzeichen Begriff/Definition", "card_separator": "Trennzeichen zwischen Karten (Zeilenumbruch ist \\n)", "learning_settings": "Lerneinstellungen", "repetitions": "Wiederholungen pro Karte", "reverse_cards": "Begriff und Definition umkehren", "case_sensitive": "Groß-/Kleinschreibung beachten", "time_limit": "Zeitlimit", "enable_time_limit": "Gesamtzeitlimit aktivieren", "minutes": "Min", "seconds": "Sek", "import": "Importieren", "export": "Exportieren", "start_learning": "Lernen starten", "stop_quiz": "Stopp", "results_title": "Lernergebnisse", "overall_accuracy": "Gesamtgenauigkeit", "most_mistakes": "Häufigste Fehler", "restart_quiz": "Neustart", "export_preset": "Dieses Set exportieren", "back_to_start": "Zurück zum Startbildschirm", "select_language": "Sprache wählen", "close": "Schließen", "alert_min_cards": "Für ein Quiz sind mindestens 4 Karten erforderlich.", "alert_invalid_input": "Ungültige Operation.", "alert_no_export_data": "Es sind keine Kartendaten zum Exportieren vorhanden.", "alert_import_failed": "Fehler beim Lesen der Datei.", "confirm_stop_quiz": "Das Lernen beenden? Der Fortschritt wird nicht gespeichert.", "quiz_phase_mcq": "Phase 1/2: Multiple-Choice", "quiz_phase_text": "Phase 2/2: Tippen", "feedback_correct": "Richtig!", "feedback_incorrect": "Falsch... Die richtige Antwort ist: {answer}", "time_up_message": "Die Zeit ist um...", "time_up_remaining": "{count} Fragen übrig", "clear_message": "Geschafft!", "time_remaining": "{time} übrig", "clear_time_message": "Benötigte Zeit", "mistake_count": "{count} Mal", "unnamed_preset": "Unbenanntes Set", "time_format": "{minutes}m {seconds}s", "answer_placeholder": "Antwort eingeben und Enter drücken", "tooltips": { "language": "Sprache ändern", "sound": "Ton umschalten", "theme": "Thema wechseln" }, "skip": "Überspringen", "enable_per_question_time_limit": "Zeitlimit pro Frage aktivieren", "seconds_per_question": "Sekunden pro Frage", "overall_time": "Gesamtzeit", "question_time": "Verbleibend", "weekdays": ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"], "switch_to_raw": "Zu Raw wechseln", "switch_to_formatted": "Zurück zum Format", "add_card": "Karte hinzufügen", "term_placeholder": "Begriff", "definition_placeholder": "Definition", "max_retries": "Max. Wiederholungen", "quiz_mode": "Quiz-Modus", "mode_mcq": "Multiple-Choice", "mode_typing": "Tippen", "mode_both": "Beides", "quiz_phase_mcq_only": "Phase 1/1: Multiple-Choice", "quiz_phase_typing_only": "Phase 1/1: Tippen" },
+    "fr": { "app_title": "Proshcard", "app_subtitle": "Créez un nouveau set d'apprentissage ou importez un fichier existant.", "preset_title": "Titre du set", "preset_title_placeholder": "Ex: Vocabulaire Anglais Chapitre 1", "card_data": "Données des cartes", "card_count": "({count} cartes)", "card_data_placeholder": "Entrez une liste de termes et de définitions ici.\nEx:\napple,pomme\nbanana,banane\n...", "term_separator": "Séparateur terme/définition", "card_separator": "Séparateur de carte (saut de ligne est \\n)", "learning_settings": "Paramètres d'étude", "repetitions": "Répétitions par carte", "reverse_cards": "Inverser terme et définition", "case_sensitive": "Sensible à la casse", "time_limit": "Limite de temps", "enable_time_limit": "Activer la limite de temps globale", "minutes": "Min", "seconds": "Sec", "import": "Importer", "export": "Exporter", "start_learning": "Commencer", "stop_quiz": "Arrêter", "results_title": "Résultats", "overall_accuracy": "Précision globale", "most_mistakes": "Mots les plus erronés", "restart_quiz": "Recommencer", "export_preset": "Exporter ce set", "back_to_start": "Retour à l'accueil", "select_language": "Sélectionner la langue", "close": "Fermer", "alert_min_cards": "Au moins 4 cartes sont nécessaires pour un quiz.", "alert_invalid_input": "Opération invalide.", "alert_no_export_data": "Il n'y a aucune donnée de carte à exporter.", "alert_import_failed": "Échec de la lecture du fichier.", "confirm_stop_quiz": "Arrêter l'apprentissage ? La progression ne sera pas sauvegardée.", "quiz_phase_mcq": "Phase 1/2 : QCM", "quiz_phase_text": "Phase 2/2 : Saisie", "feedback_correct": "Correct !", "feedback_incorrect": "Incorrect... La bonne réponse est : {answer}", "time_up_message": "Temps écoulé...", "time_up_remaining": "{count} questions restantes", "clear_message": "Terminé !", "time_remaining": "{time} restant", "clear_time_message": "Temps final", "mistake_count": "{count} fois", "unnamed_preset": "Set sans titre", "time_format": "{minutes}m {seconds}s", "answer_placeholder": "Tapez la réponse et appuyez sur Entrée", "tooltips": { "language": "Changer de langue", "sound": "Activer/Désactiver le son", "theme": "Changer de thème" }, "skip": "Passer", "enable_per_question_time_limit": "Activer la limite par question", "seconds_per_question": "Secondes par question", "overall_time": "Temps total", "question_time": "Temps rest.", "weekdays": ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"], "switch_to_raw": "Passer à Raw", "switch_to_formatted": "Retour au Format", "add_card": "Ajouter Carte", "term_placeholder": "Terme", "definition_placeholder": "Définition", "max_retries": "Max tentatives", "quiz_mode": "Mode de quiz", "mode_mcq": "QCM", "mode_typing": "Saisie", "mode_both": "Les deux", "quiz_phase_mcq_only": "Phase 1/1 : QCM", "quiz_phase_typing_only": "Phase 1/1 : Saisie" }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -567,7 +466,8 @@ document.addEventListener('DOMContentLoaded', () => {
         perQuestionTimeLimitInput: document.getElementById('per-question-time-limit-input'), questionTimerDisplay: document.getElementById('question-timer-display'),
         rawEditorContainer: document.getElementById('raw-editor-container'), formattedEditorContainer: document.getElementById('formatted-editor-container'),
         formatBtn: document.getElementById('format-btn'), backToRawBtn: document.getElementById('back-to-raw-btn'),
-        formattedEditor: document.getElementById('formatted-editor'), addCardBtn: document.getElementById('add-card-btn'), separatorsContainer: document.getElementById('separators-container')
+        formattedEditor: document.getElementById('formatted-editor'), addCardBtn: document.getElementById('add-card-btn'), separatorsContainer: document.getElementById('separators-container'),
+        maxRetriesInput: document.getElementById('max-retries-input'), quizModeInputs: document.querySelectorAll('input[name="quiz-mode"]')
     };
     const sounds = {
         click: document.getElementById('audio-click'), correct: document.getElementById('audio-correct'), incorrect: document.getElementById('audio-incorrect'),
@@ -583,7 +483,7 @@ document.addEventListener('DOMContentLoaded', () => {
             soundEnabled: localStorage.getItem('soundEnabled') !== 'false',
             settings: {
                 repetitions: 1, caseSensitive: false, timeLimitEnabled: false, timeLimit: 0, reverseCards: false,
-                perQuestionTimeLimitEnabled: false, perQuestionTimeLimit: 10
+                perQuestionTimeLimitEnabled: false, perQuestionTimeLimit: 10, maxRetries: 2, quizMode: 'both'
             }
         };
     }
@@ -633,11 +533,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const repetitions = parseInt(ui.repetitionsInput.value, 10);
+        const maxRetries = parseInt(ui.maxRetriesInput.value, 10);
         const timeMin = parseInt(ui.timeLimitMinInput.value, 10);
         const timeSec = parseInt(ui.timeLimitSecInput.value, 10);
         const perQuestionTime = parseInt(ui.perQuestionTimeLimitInput.value, 10);
+        const quizMode = document.querySelector('input[name="quiz-mode"]:checked').value;
 
-        if (isNaN(repetitions) || repetitions < 1 || repetitions > 10 || isNaN(timeMin) || timeMin < 0 || isNaN(timeSec) || timeSec < 0 || timeSec > 59 || isNaN(perQuestionTime) || perQuestionTime < 1) {
+        if (isNaN(repetitions) || repetitions < 1 || isNaN(maxRetries) || maxRetries < 0 || isNaN(timeMin) || timeMin < 0 || isNaN(timeSec) || timeSec < 0 || timeSec > 59 || isNaN(perQuestionTime) || perQuestionTime < 1) {
             alert(translations[currentLanguage].alert_invalid_input);
             return;
         }
@@ -655,7 +557,8 @@ document.addEventListener('DOMContentLoaded', () => {
         state.soundEnabled = currentSoundState;
         state.cards = parsedCards;
         state.settings = {
-            repetitions: repetitions, caseSensitive: ui.caseSensitiveCheckbox.checked,
+            repetitions: repetitions, maxRetries: maxRetries, quizMode: quizMode,
+            caseSensitive: ui.caseSensitiveCheckbox.checked,
             timeLimitEnabled: ui.timeLimitCheckbox.checked, reverseCards: ui.reverseCardsCheckbox.checked,
             timeLimit: timeMin * 60 + timeSec,
             perQuestionTimeLimitEnabled: ui.perQuestionTimeLimitCheckbox.checked, perQuestionTimeLimit: perQuestionTime
@@ -679,8 +582,21 @@ document.addEventListener('DOMContentLoaded', () => {
             mcqQueue.push(...shuffledCards.map(card => ({ type: 'mcq', cardRef: card })));
             typingQueue.push(...shuffledCards.map(card => ({ type: 'text', cardRef: card })));
         }
-        state.quizQueue = [...mcqQueue, ...typingQueue];
-        state.mcqBoundary = mcqQueue.length;
+        
+        switch (state.settings.quizMode) {
+            case 'mcq':
+                state.quizQueue = mcqQueue;
+                state.mcqBoundary = mcqQueue.length;
+                break;
+            case 'typing':
+                state.quizQueue = typingQueue;
+                state.mcqBoundary = 0;
+                break;
+            default:
+                state.quizQueue = [...mcqQueue, ...typingQueue];
+                state.mcqBoundary = mcqQueue.length;
+                break;
+        }
     }
     
     function updateTimer() {
@@ -733,10 +649,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         const { type, cardRef } = state.quizQueue[state.currentQuestionIndex];
+        const lang = translations[currentLanguage];
         ui.quizTitle.textContent = state.title;
-        ui.quizPhase.textContent = state.currentQuestionIndex < state.mcqBoundary 
-            ? translations[currentLanguage].quiz_phase_mcq 
-            : translations[currentLanguage].quiz_phase_text;
+        switch(state.settings.quizMode) {
+            case 'mcq': ui.quizPhase.textContent = lang.quiz_phase_mcq_only; break;
+            case 'typing': ui.quizPhase.textContent = lang.quiz_phase_typing_only; break;
+            default: ui.quizPhase.textContent = state.currentQuestionIndex < state.mcqBoundary ? lang.quiz_phase_mcq : lang.quiz_phase_text; break;
+        }
+        
         ui.answerContainer.innerHTML = '';
         ui.progressCounter.textContent = `${state.currentQuestionIndex + 1} / ${state.quizQueue.length}`;
         ui.progressIndicator.style.width = `${((state.currentQuestionIndex + 1) / state.quizQueue.length) * 100}%`;
@@ -795,7 +715,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.incorrectCount++; playSound('incorrect');
             ui.feedback.textContent = translations[currentLanguage].feedback_incorrect.replace('{answer}', card.term);
             ui.feedback.className = 'incorrect'; indicator.classList.add('incorrect');
-            if (card.retries < 2) {
+            if (card.retries < state.settings.maxRetries) {
                 card.retries++;
                 const newAttempt = { ...state.quizQueue[state.currentQuestionIndex] };
                 state.quizQueue.splice(state.currentQuestionIndex < state.mcqBoundary ? state.mcqBoundary++ : state.quizQueue.length, 0, newAttempt);
@@ -879,7 +799,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    function handleExport(dataSource) {
+    function handleExport() {
         playSound('click');
         const isFormattedView = !ui.formattedEditorContainer.classList.contains('hidden');
         if(isFormattedView) syncFormattedToRaw();
@@ -900,7 +820,9 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const data = JSON.parse(e.target.result);
                 ui.titleInput.value = data.title || '';
-                ui.cardsInput.value = data.cards.map(card => `${card.term || ''}${ui.termSeparatorInput.value}${card.definition || ''}`).join(ui.cardSeparatorInput.value === '\\n' ? '\n' : ui.cardSeparatorInput.value);
+                const termSeparator = ui.termSeparatorInput.value;
+                const cardSeparator = ui.cardSeparatorInput.value === '\\n' ? '\n' : ui.cardSeparatorInput.value;
+                ui.cardsInput.value = data.cards.map(card => `${card.term || ''}${termSeparator}${card.definition || ''}`).join(cardSeparator);
                 syncRawToFormatted();
                 saveSetupState();
             } catch (error) { alert(translations[currentLanguage].alert_import_failed); }
@@ -988,6 +910,8 @@ document.addEventListener('DOMContentLoaded', () => {
             termSeparator: ui.termSeparatorInput.value,
             cardSeparator: ui.cardSeparatorInput.value,
             repetitions: ui.repetitionsInput.value,
+            maxRetries: ui.maxRetriesInput.value,
+            quizMode: document.querySelector('input[name="quiz-mode"]:checked').value,
             reverseCards: ui.reverseCardsCheckbox.checked,
             caseSensitive: ui.caseSensitiveCheckbox.checked,
             timeLimit: ui.timeLimitCheckbox.checked,
@@ -1009,6 +933,8 @@ document.addEventListener('DOMContentLoaded', () => {
             ui.termSeparatorInput.value = state.termSeparator || ',';
             ui.cardSeparatorInput.value = state.cardSeparator || '\\n';
             ui.repetitionsInput.value = state.repetitions || '1';
+            ui.maxRetriesInput.value = state.maxRetries || '2';
+            document.querySelector(`input[name="quiz-mode"][value="${state.quizMode || 'both'}"]`).checked = true;
             ui.reverseCardsCheckbox.checked = state.reverseCards || false;
             ui.caseSensitiveCheckbox.checked = state.caseSensitive || false;
             ui.timeLimitCheckbox.checked = state.timeLimit || false;
@@ -1114,14 +1040,9 @@ document.addEventListener('DOMContentLoaded', () => {
     ui.startBtn.addEventListener('click', startQuiz);
     ui.stopBtn.addEventListener('click', () => { if (confirm(translations[currentLanguage].confirm_stop_quiz)) { playSound('click'); navigateTo('setup'); } });
     ui.importFileBtn.addEventListener('change', handleImport);
-    ui.exportSetupBtn.addEventListener('click', () => {
-        const isFormattedView = !ui.formattedEditorContainer.classList.contains('hidden');
-        if(isFormattedView) syncFormattedToRaw();
-        const cardsToExport = parseInput(true).filter(c => c.term && c.definition);
-        if (cardsToExport.length > 0) handleExport({title: ui.titleInput.value.trim(), cards: cardsToExport}); else alert(translations[currentLanguage].alert_no_export_data);
-    });
+    ui.exportSetupBtn.addEventListener('click', handleExport);
     ui.exportResultsBtn.addEventListener('click', () => handleExport({title: state.title, cards: state.cards}));
-    ui.restartBtn.addEventListener('click', () => { playSound('click'); initState(); startQuiz()});
+    ui.restartBtn.addEventListener('click', () => { playSound('click'); startQuiz()});
     ui.newSetBtn.addEventListener('click', () => { playSound('click'); navigateTo('setup'); });
     
     ui.languageToggle.addEventListener('click', () => ui.languageModal.classList.add('show'));
